@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIVERSIFY HOME – Livraison • Tech • Design • Photo • Lomé</title>
+<meta name="description" content="DIVERSIFY HOME — Multi-services premium à Lomé, Togo. Livraison, réparation tech, design graphique, photo, impression, abonnements numériques et bien plus.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dh_styles.css">
+<style>
+  :root {
+    --black:#0a0a0a; --deep:#111111; --gold:#c9a84c;
+    --gold-light:#e2c07a; --gold-dark:#9a7730;
+    --white:#f5f5f0; --white-dim:#cccccc; --gray:#888888;
+    --card-bg:#181818;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--black);color:var(--white);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden}
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--black)}
+  ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+  /* ── NAV ── */
+  nav{position:fixed;top:0;width:100%;z-index:1000;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,0.15);transition:padding .3s}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;letter-spacing:3px;color:var(--white);text-decoration:none}
+  .nav-logo span{color:var(--gold)}
+  .nav-links{display:flex;gap:32px;list-style:none}
+  .nav-links a{color:var(--white-dim);text-decoration:none;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:500;transition:color .3s}
+  .nav-links a:hover{color:var(--gold)}
+  .nav-cta{background:var(--gold);color:var(--black);padding:10px 24px;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:background .3s}
+  .nav-cta:hover{background:var(--gold-light)}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+  .hamburger span{display:block;width:24px;height:1.5px;background:var(--white-dim);transition:.3s}
+  .mobile-nav{position:fixed;inset:0;z-index:999;background:rgba(10,10,10,0.98);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transform:translateX(100%);transition:transform .4s ease}
+  .mobile-nav.open{transform:translateX(0)}
+  .mob-link{color:var(--white-dim);text-decoration:none;font-size:1.4rem;letter-spacing:3px;text-transform:uppercase;font-weight:300;transition:color .3s}
+  .mob-link:hover{color:var(--gold)}
+  .mobile-close{position:absolute;top:24px;right:24px;font-size:1.8rem;cursor:pointer;color:var(--white-dim);background:none;border:none}
+
+  /* ── HERO ── */
+  #hero{min-height:100vh;display:flex;align-items:center;justify-content:flex-start;padding:0 60px;position:relative;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 60% 40%,rgba(201,168,76,.08) 0%,transparent 60%),linear-gradient(135deg,#0a0a0a 0%,#0f0f0f 50%,#0a0a0a 100%)}
+  .hero-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4}
+  .hero-content{position:relative;z-index:2;max-width:680px}
+  .hero-tag{display:block;font-size:.62rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6rem);font-weight:700;line-height:.95;margin-bottom:28px}
+  .hero-title em{color:var(--gold);font-style:normal}
+  .hero-sub{font-size:.88rem;color:var(--gray);line-height:1.9;max-width:500px;margin-bottom:40px}
+  .hero-sub strong{color:var(--gold-light)}
+  .hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+  .btn-gold{background:var(--gold);color:var(--black);padding:14px 32px;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:background .3s,transform .2s;display:inline-block}
+  .btn-gold:hover{background:var(--gold-light);transform:translateY(-2px)}
+  .btn-outline{border:1px solid rgba(201,168,76,0.4);color:var(--white-dim);padding:14px 32px;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;font-weight:500;text-decoration:none;transition:border-color .3s,color .3s;display:inline-block}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+  .hero-scroll{position:absolute;bottom:40px;left:60px;z-index:2;display:flex;align-items:center;gap:12px}
+  .hero-scroll span{font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--gray)}
+  .hero-scroll-line{width:60px;height:1px;background:var(--gold);animation:scrollLine 2s ease-in-out infinite}
+  @keyframes scrollLine{0%,100%{opacity:.3;width:40px}50%{opacity:1;width:60px}}
+
+  /* ── ABOUT ── */
+  #about{padding:100px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;border-top:1px solid rgba(201,168,76,0.08)}
+  .section-tag{display:block;font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:1.05;margin-bottom:14px}
+  .section-title em{color:var(--gold);font-style:normal}
+  .divider{width:48px;height:1px;background:var(--gold);margin:20px 0 32px}
+  .divider.center{margin:20px auto 32px}
+  #about p{font-size:.86rem;color:var(--gray);line-height:1.9;margin-bottom:14px}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+  .stat-card{background:var(--card-bg);padding:32px 28px;border:1px solid rgba(201,168,76,0.1);transition:border-color .3s}
+  .stat-card:hover{border-color:rgba(201,168,76,0.35)}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--gold);line-height:1}
+  .stat-label{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:8px}
+
+  /* ── SERVICES ── */
+  #services{padding:100px 60px;background:var(--deep);border-top:1px solid rgba(201,168,76,0.08)}
+  .services-header{text-align:center;margin-bottom:56px}
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+  .service-card{background:var(--card-bg);padding:32px 28px;border:1px solid rgba(201,168,76,0.08);transition:border-color .3s,background .3s,transform .3s;cursor:default}
+  .service-card:hover{border-color:rgba(201,168,76,0.3);background:#1e1e1e;transform:translateY(-4px)}
+  .service-icon{font-size:2rem;display:block;margin-bottom:14px}
+  .service-name{font-size:.82rem;font-weight:600;margin-bottom:10px;color:var(--white)}
+  .service-desc{font-size:.75rem;color:var(--gray);line-height:1.8;margin-bottom:14px}
+  .service-price{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold);font-weight:600}
+
+  /* ── ORDER ── */
+  #order{padding:100px 60px;border-top:1px solid rgba(201,168,76,0.08)}
+  .order-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:start}
+  .order-info p{font-size:.86rem;color:var(--gray);line-height:1.9;margin-bottom:20px}
+  .order-contact{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+  .order-contact a{display:flex;align-items:center;gap:14px;color:var(--white-dim);text-decoration:none;font-size:.82rem;padding:14px 18px;border:1px solid rgba(255,255,255,0.08);transition:border-color .3s,color .3s}
+  .order-contact a:hover{border-color:var(--gold);color:var(--gold)}
+  .order-contact .ico{font-size:1.2rem}
+  .form-group{margin-bottom:16px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;font-weight:500}
+  input,select,textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:12px 16px;font-family:'Montserrat',sans-serif;font-size:.82rem;outline:none;transition:border-color .3s;-webkit-appearance:none}
+  input::placeholder,textarea::placeholder{color:#555}
+  input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+  select option{background:var(--deep);color:var(--white)}
+  textarea{min-height:100px;resize:vertical}
+  .form-submit{width:100%;background:var(--gold);color:var(--black);padding:15px;font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:background .3s,transform .2s;margin-top:6px}
+  .form-submit:hover{background:var(--gold-light);transform:translateY(-1px)}
+
+  /* ── AFFILIATION ── */
+  #affiliation{padding:100px 60px;background:var(--deep);border-top:1px solid rgba(201,168,76,0.08)}
+  .affil-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+  .affil-steps{display:flex;flex-direction:column;gap:24px;margin-top:8px}
+  .affil-step{display:flex;gap:20px;align-items:flex-start}
+  .step-num{width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--gold);flex-shrink:0}
+  .step-content h4{font-size:.82rem;font-weight:600;margin-bottom:6px}
+  .step-content p{font-size:.76rem;color:var(--gray);line-height:1.8}
+  .commissions-grid{display:flex;flex-direction:column;gap:6px;margin-top:16px}
+  .commission-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid rgba(201,168,76,0.1);transition:background .3s}
+  .commission-row:hover{background:rgba(201,168,76,0.05)}
+  .commission-service{font-size:.75rem;color:var(--white-dim)}
+  .commission-pct{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);flex-shrink:0;margin-left:12px}
+  .affil-cta{display:inline-block;margin-top:28px;background:var(--gold);color:var(--black);padding:14px 32px;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:background .3s}
+  .affil-cta:hover{background:var(--gold-light)}
+  .affil-note{font-size:.72rem;color:var(--gray);line-height:1.8;margin-top:14px}
+
+  /* ── FOOTER ── */
+  footer{background:#080808;border-top:1px solid rgba(201,168,76,0.15);padding:64px 60px 32px}
+  .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:48px}
+  .footer-brand .logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;letter-spacing:3px;margin-bottom:14px}
+  .footer-brand .logo span{color:var(--gold)}
+  .footer-brand p{font-size:.78rem;color:var(--gray);line-height:1.9;max-width:300px}
+  .footer-col h4{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .footer-col ul{list-style:none}
+  .footer-col li{margin-bottom:10px}
+  .footer-col a{color:var(--gray);text-decoration:none;font-size:.78rem;transition:color .3s}
+  .footer-col a:hover{color:var(--gold)}
+  .footer-wa{display:flex;align-items:center;gap:12px;margin-top:16px;color:var(--gray);font-size:.78rem;text-decoration:none;transition:color .3s}
+  .footer-wa:hover{color:#25d366}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .footer-copy{font-size:.72rem;color:var(--gray)}
+
+  /* ── WHATSAPP FLOAT ── */
+  .wa-float{
+    position:fixed;bottom:32px;right:32px;z-index:999;
+    width:68px;height:68px;border-radius:50%;
+    background:#25d366;
+    display:flex;align-items:center;justify-content:center;
+    text-decoration:none;
+    box-shadow:0 6px 28px rgba(37,211,102,0.5);
+    animation:waPulse 2.5s ease-in-out infinite;
+    transition:transform .2s;
+  }
+  .wa-float:hover{transform:scale(1.12)}
+  .wa-float svg{width:36px;height:36px;fill:#fff}
+  @keyframes waPulse{
+    0%,100%{box-shadow:0 6px 28px rgba(37,211,102,0.5)}
+    50%{box-shadow:0 8px 44px rgba(37,211,102,0.85),0 0 0 10px rgba(37,211,102,0.12)}
+  }
+  .wa-tooltip{
+    position:fixed;bottom:48px;right:110px;z-index:998;
+    background:var(--card-bg);border:1px solid rgba(37,211,102,0.25);
+    padding:10px 18px;font-size:.75rem;white-space:nowrap;
+    color:var(--white);opacity:0;pointer-events:none;
+    transition:opacity .3s;border-radius:2px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  }
+  .wa-float:hover + .wa-tooltip{opacity:1}
+
+  /* ── TOAST ── */
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--gold);color:var(--black);padding:14px 28px;font-size:.76rem;letter-spacing:1.5px;font-weight:700;z-index:9999;transition:transform .4s,opacity .4s;opacity:0}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  /* ── REVEAL ── */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:1024px){
+    .services-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:768px){
+    nav{padding:16px 20px}
+    .nav-links,.nav-cta{display:none}
+    .hamburger{display:flex}
+    #hero{padding:0 20px;min-height:100svh}
+    .hero-scroll{left:20px}
+    #about{padding:72px 20px;grid-template-columns:1fr;gap:48px}
+    #services{padding:72px 20px}
+    .services-grid{grid-template-columns:1fr}
+    #order{padding:72px 20px}
+    .order-wrap{grid-template-columns:1fr;gap:48px}
+    .form-row{grid-template-columns:1fr}
+    #affiliation{padding:72px 20px}
+    .affil-wrap{grid-template-columns:1fr;gap:48px}
+    footer{padding:48px 20px 24px}
+    .footer-top{grid-template-columns:1fr;gap:32px}
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+    .wa-float{width:60px;height:60px;bottom:24px;right:20px}
+    .wa-float svg{width:30px;height:30px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">DIVERSIFY <span>HOME</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#order">Commander</a></li>
+    <li><a href="#affiliation">Affiliation</a></li>
+  </ul>
+  <a class="nav-cta" href="https://wa.me/22890771701" target="_blank">Commander →</a>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="#about" class="mob-link" onclick="closeMob()">À propos</a>
+  <a href="#services" class="mob-link" onclick="closeMob()">Services</a>
+  <a href="#order" class="mob-link" onclick="closeMob()">Commander</a>
+  <a href="#affiliation" class="mob-link" onclick="closeMob()">Affiliation</a>
+  <a href="https://wa.me/22890771701" target="_blank" class="mob-link" style="color:#25d366">WhatsApp →</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <span class="hero-tag">Lomé, Togo — Services Premium</span>
+    <h1 class="hero-title">Tout ce dont<br>vous avez <em>besoin</em>,<br>en un seul endroit</h1>
+    <p class="hero-sub">Dédouanement, achat international, échange de devises, livraison, réparation tech, design, photo, impressions, hébergement web, abonnements numériques — <strong>DIVERSIFY HOME</strong> couvre tous vos besoins avec excellence.</p>
+    <div class="hero-btns">
+      <a class="btn-gold" href="https://wa.me/22890771701" target="_blank">Commander sur WhatsApp</a>
+      <a class="btn-outline" href="#services">Découvrir nos services</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Défiler</span><div class="hero-scroll-line"></div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text reveal">
+    <span class="section-tag">Notre identité</span>
+    <h2 class="section-title">Une entreprise <em>multiple</em>,<br>un service d'exception</h2>
+    <div class="divider"></div>
+    <p>DIVERSIFY HOME est née d'une vision simple : rassembler les services essentiels du quotidien sous un même toit. Disponible, réactif et professionnel — nous mettons notre expertise au service de vos projets, qu'ils soient personnels ou professionnels.</p>
+    <p>Notre équipe pluridisciplinaire intervient aussi bien pour votre smartphone cassé que pour votre prochaine identité visuelle ou votre événement à immortaliser.</p>
+    <a class="btn-gold" href="#services" style="margin-top:12px">Voir nos services →</a>
+  </div>
+  <div class="about-stats reveal">
+    <div class="stat-card"><div class="stat-num">15+</div><div class="stat-label">Services proposés</div></div>
+    <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Clients satisfaits</div></div>
+    <div class="stat-card"><div class="stat-num">24h</div><div class="stat-label">Réactivité garantie</div></div>
+    <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Possibilités</div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <span class="section-tag">Ce que nous proposons</span>
+    <h2 class="section-title">Nos <em>services</em></h2>
+    <div class="divider center"></div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card"><span class="service-icon">🚢</span><div class="service-name">Dédouanement & Transit de Marchandises</div><p class="service-desc">Dédouanement rapide, transit international, accompagnement complet. Documents & formalités douanières gérés pour vous.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">🏗️</span><div class="service-name">Achat de Marchandises & Engins à l'International</div><p class="service-desc">Achat de marchandises, engins & véhicules via fournisseurs fiables. Livraison sécurisée depuis l'international.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">💱</span><div class="service-name">Échange de Devise</div><p class="service-desc">Taux compétitifs, transfert sécurisé, devises disponibles. Service fiable & rapide pour particuliers et entreprises.</p><div class="service-price">Taux du marché</div></div>
+    <div class="service-card"><span class="service-icon">🖥️</span><div class="service-name">Hébergement de Site Web</div><p class="service-desc">Hébergement rapide & sécurisé, nom de domaine, sauvegarde régulière, support technique 7j/7.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">🚐</span><div class="service-name">Livraison à Domicile Rapide & Sécurisée</div><p class="service-desc">Livraison express avec suivi en temps réel. Pour tous vos colis et commandes partout à Lomé.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">📦</span><div class="service-name">Bagages, Déménagement & Transport</div><p class="service-desc">Déménagement, transport de matériels, emballage sécurisé, livraison fiable. Service complet et soigné.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">💎</span><div class="service-name">Abonnements Numériques</div><p class="service-desc">Netflix, Prime Video, YouTube Premium, Spotify, Disney+, Canal+. Films, séries, musique et bien plus.</p><div class="service-price">Dès 2 500 FCFA/mois</div></div>
+    <div class="service-card"><span class="service-icon">🍽️</span><div class="service-name">Commande & Livraison de Repas</div><p class="service-desc">Pizza, gâteaux, repas maison livrés rapidement chez vous. Frais & délicieux, disponible 7j/7 à Lomé.</p><div class="service-price">Dès 500 FCFA</div></div>
+    <div class="service-card"><span class="service-icon">💻</span><div class="service-name">Installation Logiciels & Windows</div><p class="service-desc">Installation Windows, Office, pilotes, antivirus et logiciels professionnels. Configuration complète garantie.</p><div class="service-price">Dès 2 000 FCFA</div></div>
+    <div class="service-card"><span class="service-icon">📱</span><div class="service-name">Réparation Téléphones & Ordinateurs</div><p class="service-desc">Écrans, batteries, cartes mères, déblocage. Diagnostic gratuit, réparation rapide de tous vos appareils.</p><div class="service-price">Devis gratuit</div></div>
+    <div class="service-card"><span class="service-icon">📸</span><div class="service-name">Shooting Photo & Montage Vidéo</div><p class="service-desc">Photos professionnelles, vidéos publicitaires, montage et couverture d'événements. Qualité studio garantie.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">🎨</span><div class="service-name">Design Graphique, Logos & Affiches</div><p class="service-desc">Création de logos, cartes de visite, affiches et flyers percutants. Identité visuelle complète et professionnelle.</p><div class="service-price">Dès 5 000 FCFA</div></div>
+    <div class="service-card"><span class="service-icon">👕</span><div class="service-name">Maillots, Pulls, Jogging & Impressions</div><p class="service-desc">Maillots, pulls, t-shirts personnalisés. Impression haute qualité pour groupes, clubs & événements.</p><div class="service-price">Dès 3 500 FCFA</div></div>
+    <div class="service-card"><span class="service-icon">🖨️</span><div class="service-name">Impressions Tous Supports</div><p class="service-desc">Mugs, flyers, bâches, autocollants, kakémonos. Impression haute résolution sur tous supports.</p><div class="service-price">Sur devis</div></div>
+    <div class="service-card"><span class="service-icon">🖼️</span><div class="service-name">Tableaux, Plexiglas & Signalétiques</div><p class="service-desc">Tableaux photos, miroir/plexiglas, signalétiques, panneaux personnalisés & décoration intérieure.</p><div class="service-price">Dès 5 000 FCFA</div></div>
+  </div>
+</section>
+
+<!-- ORDER -->
+<section id="order">
+  <div class="order-wrap">
+    <div class="order-info reveal">
+      <span class="section-tag">Passer une commande</span>
+      <h2 class="section-title">Commandez<br><em>facilement</em></h2>
+      <div class="divider"></div>
+      <p>Remplissez le formulaire et notre équipe vous contacte dans les plus brefs délais pour confirmer votre commande et vous fournir un devis personnalisé.</p>
+      <div class="order-contact">
+        <a href="https://wa.me/22890771701" target="_blank">
+          <span class="ico">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;fill:#25d366"><path d="M16.003 3C9.375 3 4 8.373 4 15.003c0 2.138.568 4.14 1.558 5.876L4 29l8.322-1.533A11.953 11.953 0 0 0 16.003 28C22.63 28 28 22.627 28 16.003 28 9.373 22.63 3 16.003 3zm0 2c5.518 0 10 4.483 10 10.003C26.003 20.52 21.52 26 16.003 26a9.95 9.95 0 0 1-5.14-1.432l-.367-.22-4.94.91.944-4.826-.24-.383A9.962 9.962 0 0 1 5 15.003C5 9.483 9.483 5 16.003 5zm-3.47 5c-.19 0-.5.072-.763.358-.263.286-1.003.98-1.003 2.39 0 1.41 1.026 2.772 1.168 2.963.143.19 2 3.12 4.882 4.25 2.408.95 2.882.76 3.402.712.52-.048 1.677-.685 1.913-1.346.236-.661.236-1.228.165-1.347-.071-.12-.263-.19-.55-.333-.286-.143-1.677-.828-1.938-.923-.26-.095-.45-.143-.638.143-.19.286-.735.924-.9 1.114-.166.19-.332.214-.618.071-.286-.143-1.208-.445-2.3-1.42-.852-.759-1.427-1.697-1.595-1.983-.167-.286-.018-.44.125-.583.128-.127.286-.333.429-.499.143-.167.19-.286.286-.476.095-.19.048-.357-.024-.499-.071-.143-.63-1.542-.87-2.108-.22-.537-.448-.46-.618-.468l-.524-.01z"/></svg>
+          </span>
+          WhatsApp — Commander directement
+        </a>
+        <a href="mailto:bobobi2007@gmail.com">
+          <span class="ico">📧</span> bobobi2007@gmail.com
+        </a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div id="orderForm">
+        <div class="form-row">
+          <div class="form-group"><label for="name">Nom complet *</label><input type="text" id="name" placeholder="Votre nom"></div>
+          <div class="form-group"><label for="phone">Téléphone / WhatsApp *</label><input type="tel" id="phone" placeholder="+228 XX XX XX XX"></div>
+        </div>
+        <div class="form-group"><label for="service">Service souhaité *</label>
+          <select id="service">
+            <option value="">— Sélectionner un service —</option>
+            <option>🚢 Dédouanement & Transit</option>
+            <option>🏗️ Achat Marchandises & Engins</option>
+            <option>💱 Échange de Devise</option>
+            <option>🖥️ Hébergement de Site</option>
+            <option>🚐 Livraison à Domicile</option>
+            <option>📦 Bagages & Déménagement</option>
+            <option>💎 Abonnements Numériques</option>
+            <option>🍽️ Livraison de Repas</option>
+            <option>💻 Installation Logiciels & Windows</option>
+            <option>📱 Réparation Téléphones & Ordinateurs</option>
+            <option>📸 Shooting Photo & Montage Vidéo</option>
+            <option>🎨 Design Graphique & Logos</option>
+            <option>👕 Maillots & Impressions Textile</option>
+            <option>🖨️ Impressions Tous Supports</option>
+            <option>🖼️ Tableaux & Signalétiques</option>
+          </select>
+        </div>
+        <div class="form-group"><label for="message">Détails de votre demande</label><textarea id="message" placeholder="Décrivez votre besoin…"></textarea></div>
+        <button class="form-submit" onclick="submitOrder()">Envoyer ma demande →</button>
+      </div>
+      <div id="orderSuccess" style="display:none;text-align:center;padding:48px 24px;border:1px solid var(--gold);background:rgba(201,168,76,.05)">
+        <div style="font-size:2.5rem;margin-bottom:16px">✅</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);margin-bottom:12px">Demande envoyée !</h3>
+        <p style="color:var(--gray);font-size:.85rem;line-height:1.9;margin-bottom:24px">Notre équipe vous contacte dans les plus brefs délais pour confirmer et vous faire un devis personnalisé.</p>
+        <a href="https://wa.me/22890771701" target="_blank" class="btn-gold">Écrire sur WhatsApp →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AFFILIATION -->
+<section id="affiliation">
+  <div class="affil-wrap">
+    <div class="reveal">
+      <span class="section-tag">Programme d'affiliation</span>
+      <h2 class="section-title">Gagnez de l'argent en<br>nous <em>recommandant</em></h2>
+      <div class="divider"></div>
+      <div class="affil-steps">
+        <div class="affil-step"><div class="step-num">1</div><div class="step-content"><h4>Inscrivez-vous gratuitement</h4><p>Remplissez un formulaire simple et recevez votre lien d'affiliation unique par WhatsApp sous 24h.</p></div></div>
+        <div class="affil-step"><div class="step-num">2</div><div class="step-content"><h4>Partagez & recommandez</h4><p>Envoyez votre lien à vos proches, sur vos réseaux ou dans vos groupes WhatsApp.</p></div></div>
+        <div class="affil-step"><div class="step-num">3</div><div class="step-content"><h4>Touchez vos commissions</h4><p>À chaque commande validée via votre lien, vous gagnez une commission versée par Mobile Money.</p></div></div>
+      </div>
+      <a class="affil-cta" href="https://wa.me/22890771701?text=Bonjour%2C%20je%20souhaite%20rejoindre%20le%20programme%20d'affiliation%20DIVERSIFY%20HOME" target="_blank">Rejoindre le programme →</a>
+    </div>
+    <div class="reveal">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:8px;color:var(--white)">Taux de commission par service</h3>
+      <p style="font-size:.75rem;color:var(--gray);margin-bottom:16px">Inscription gratuite · Paiement hebdomadaire · Aucun minimum</p>
+      <div class="commissions-grid">
+        <div class="commission-row"><span class="commission-service">🚢 Dédouanement & Transit</span><span class="commission-pct">8%</span></div>
+        <div class="commission-row"><span class="commission-service">🏗️ Achat Marchandises & Engins</span><span class="commission-pct">5%</span></div>
+        <div class="commission-row"><span class="commission-service">💱 Échange de Devise</span><span class="commission-pct">5%</span></div>
+        <div class="commission-row"><span class="commission-service">🖥️ Hébergement de Site</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">🚐 Livraison à Domicile</span><span class="commission-pct">8%</span></div>
+        <div class="commission-row"><span class="commission-service">📦 Bagages & Déménagement</span><span class="commission-pct">8%</span></div>
+        <div class="commission-row"><span class="commission-service">💎 Abonnements Numériques</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">🍽️ Livraison de Repas</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">💻 Installation Logiciels</span><span class="commission-pct">8%</span></div>
+        <div class="commission-row"><span class="commission-service">📱 Réparation Tech</span><span class="commission-pct">8%</span></div>
+        <div class="commission-row"><span class="commission-service">📸 Shooting Photo & Vidéo</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">🎨 Design Graphique & Logos</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">👕 Textile & Impressions</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">🖨️ Impressions Tous Supports</span><span class="commission-pct">10%</span></div>
+        <div class="commission-row"><span class="commission-service">🖼️ Tableaux & Signalétiques</span><span class="commission-pct">10%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo">DIVERSIFY <span>HOME</span></div>
+      <p>Votre solution multi-services à Lomé, Togo. Qualité, rapidité et excellence sont nos engagements quotidiens.</p>
+      <a class="footer-wa" href="https://wa.me/22890771701" target="_blank">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;fill:#25d366"><path d="M16.003 3C9.375 3 4 8.373 4 15.003c0 2.138.568 4.14 1.558 5.876L4 29l8.322-1.533A11.953 11.953 0 0 0 16.003 28C22.63 28 28 22.627 28 16.003 28 9.373 22.63 3 16.003 3zm0 2c5.518 0 10 4.483 10 10.003C26.003 20.52 21.52 26 16.003 26a9.95 9.95 0 0 1-5.14-1.432l-.367-.22-4.94.91.944-4.826-.24-.383A9.962 9.962 0 0 1 5 15.003C5 9.483 9.483 5 16.003 5zm-3.47 5c-.19 0-.5.072-.763.358-.263.286-1.003.98-1.003 2.39 0 1.41 1.026 2.772 1.168 2.963.143.19 2 3.12 4.882 4.25 2.408.95 2.882.76 3.402.712.52-.048 1.677-.685 1.913-1.346.236-.661.236-1.228.165-1.347-.071-.12-.263-.19-.55-.333-.286-.143-1.677-.828-1.938-.923-.26-.095-.45-.143-.638.143-.19.286-.735.924-.9 1.114-.166.19-.332.214-.618.071-.286-.143-1.208-.445-2.3-1.42-.852-.759-1.427-1.697-1.595-1.983-.167-.286-.018-.44.125-.583.128-.127.286-.333.429-.499.143-.167.19-.286.286-.476.095-.19.048-.357-.024-.499-.071-.143-.63-1.542-.87-2.108-.22-.537-.448-.46-.618-.468l-.524-.01z"/></svg>
+        +228 90 77 17 01
+      </a>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="#about">À propos</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#order">Commander</a></li>
+        <li><a href="#affiliation">Affiliation</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="https://wa.me/22890771701" target="_blank">WhatsApp</a></li>
+        <li><a href="mailto:bobobi2007@gmail.com">Email</a></li>
+        <li><a href="#order">Formulaire</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2024 DIVERSIFY HOME — Lomé, Togo</span>
+    <span class="footer-copy">Tous droits réservés</span>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT (vrai logo SVG) -->
+<a class="wa-float" href="https://wa.me/22890771701" target="_blank" title="Nous écrire sur WhatsApp">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.003 3C9.375 3 4 8.373 4 15.003c0 2.138.568 4.14 1.558 5.876L4 29l8.322-1.533A11.953 11.953 0 0 0 16.003 28C22.63 28 28 22.627 28 16.003 28 9.373 22.63 3 16.003 3zm0 2c5.518 0 10 4.483 10 10.003C26.003 20.52 21.52 26 16.003 26a9.95 9.95 0 0 1-5.14-1.432l-.367-.22-4.94.91.944-4.826-.24-.383A9.962 9.962 0 0 1 5 15.003C5 9.483 9.483 5 16.003 5zm-3.47 5c-.19 0-.5.072-.763.358-.263.286-1.003.98-1.003 2.39 0 1.41 1.026 2.772 1.168 2.963.143.19 2 3.12 4.882 4.25 2.408.95 2.882.76 3.402.712.52-.048 1.677-.685 1.913-1.346.236-.661.236-1.228.165-1.347-.071-.12-.263-.19-.55-.333-.286-.143-1.677-.828-1.938-.923-.26-.095-.45-.143-.638.143-.19.286-.735.924-.9 1.114-.166.19-.332.214-.618.071-.286-.143-1.208-.445-2.3-1.42-.852-.759-1.427-1.697-1.595-1.983-.167-.286-.018-.44.125-.583.128-.127.286-.333.429-.499.143-.167.19-.286.286-.476.095-.19.048-.357-.024-.499-.071-.143-.63-1.542-.87-2.108-.22-.537-.448-.46-.618-.468l-.524-.01z"/>
+  </svg>
+</a>
+<div class="wa-tooltip">Écrire sur WhatsApp</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Hamburger
+  const ham=document.getElementById('hamburger');
+  const mob=document.getElementById('mobileNav');
+  const cls=document.getElementById('mobileClose');
+  ham.addEventListener('click',()=>mob.classList.add('open'));
+  cls.addEventListener('click',()=>mob.classList.remove('open'));
+  function closeMob(){mob.classList.remove('open')}
+
+  // Reveal scroll
+  const reveals=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('visible'),i*80);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.08});
+  reveals.forEach(r=>obs.observe(r));
+
+  // Toast
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3500);
+  }
+
+  // Order form
+  function submitOrder(){
+    const name=document.getElementById('name').value.trim();
+    const phone=document.getElementById('phone').value.trim();
+    const service=document.getElementById('service').value;
+    if(!name||!phone||!service){showToast('⚠️ Veuillez remplir les champs obligatoires.');return;}
+    document.getElementById('orderForm').style.display='none';
+    document.getElementById('orderSuccess').style.display='block';
+    showToast('✅ Demande envoyée !');
+  }
+
+  // Nav shrink on scroll
+  window.addEventListener('scroll',()=>{
+    document.getElementById('navbar').style.padding=window.scrollY>60?'12px 60px':'18px 60px';
+  });
+</script>
+</body>
+</html>
