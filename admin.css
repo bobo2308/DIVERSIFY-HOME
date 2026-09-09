@@ -2,9 +2,9 @@
    DIVERSIFY HOME — Dashboard admin
    Réutilise les variables de couleur définies dans dh_styles.css (:root)
    ============================================================================ */
-
+ 
 body { font-weight: 400; }
-
+ 
 /* ── ÉCRAN DE CONNEXION ── */
 #loginScreen {
   min-height: 100vh;
@@ -76,19 +76,21 @@ body { font-weight: 400; }
   text-align: center;
   min-height: 1em;
 }
-
+ 
 /* ── STRUCTURE DASHBOARD ── */
 #dashboardScreen { display: flex; min-height: 100vh; }
-
+ 
 .sidebar {
   width: 220px;
   flex-shrink: 0;
   background: var(--deep);
   border-right: 1px solid rgba(201,168,76,0.1);
   padding: 28px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
+  overflow-y: auto;
 }
 .sidebar-brand {
   font-family: 'Cormorant Garamond', serif;
@@ -135,8 +137,8 @@ body { font-weight: 400; }
   font-family: 'Montserrat', sans-serif;
 }
 .link-quiet:hover { color: var(--white-dim); }
-
-.main { flex: 1; padding: 36px 44px; max-width: 100%; overflow-x: auto; }
+ 
+.main { flex: 1; margin-left: 220px; padding: 36px 44px; max-width: 100%; overflow-x: auto; }
 .main-header {
   display: flex;
   align-items: center;
@@ -151,7 +153,7 @@ body { font-weight: 400; }
   font-weight: 700;
   color: var(--white);
 }
-
+ 
 /* ── CONTROLS ── */
 .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
 select.filter, input.search {
@@ -175,7 +177,7 @@ select.filter, input.search {
 .btn:hover { background: var(--gold); color: var(--black); }
 .btn-danger { border-color: rgba(162,79,79,0.4); color: #d98a8a; }
 .btn-danger:hover { background: #a24f4f; color: var(--white); }
-
+ 
 /* ── TABLE ── */
 .table-wrap { border: 1px solid rgba(201,168,76,0.08); background: var(--card-bg); }
 table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
@@ -198,7 +200,7 @@ tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: rgba(201,168,76,0.03); }
 td.strong { color: var(--white); }
 .cell-msg { max-width: 260px; font-size: 0.78rem; color: var(--gray); }
-
+ 
 /* ── STATUS PILLS ── */
 .pill {
   display: inline-block;
@@ -212,12 +214,12 @@ td.strong { color: var(--white); }
 .pill-en_cours { background: rgba(184,121,58,0.15); color: #d99a5c; }
 .pill-livre { background: rgba(92,138,92,0.15); color: #8fc28f; }
 .pill-annule { background: rgba(162,79,79,0.15); color: #d98a8a; }
-
+ 
 .pill-actif { background: rgba(92,138,92,0.15); color: #8fc28f; }
 .pill-inactif { background: rgba(136,136,136,0.15); color: var(--gray); }
 .pill-en_attente { background: rgba(91,124,153,0.15); color: #8fb3d1; }
 .pill-suspendu, .pill-refuse { background: rgba(162,79,79,0.15); color: #d98a8a; }
-
+ 
 select.status-select {
   background: var(--black);
   border: 1px solid rgba(201,168,76,0.2);
@@ -225,7 +227,7 @@ select.status-select {
   font-size: 0.75rem;
   padding: 5px 7px;
 }
-
+ 
 /* ── SERVICES GRID (admin) ── */
 .admin-services-grid {
   display: grid;
@@ -253,7 +255,7 @@ select.status-select {
 .admin-svc-body .price { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
 .admin-svc-actions { display: flex; gap: 8px; margin-top: auto; }
 .admin-svc-actions .btn { flex: 1; text-align: center; font-size: 0.72rem; padding: 7px; }
-
+ 
 /* ── MODAL ── */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -289,7 +291,7 @@ textarea.field-textarea {
 .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--white-dim); margin-bottom: 18px; }
 .empty-state { padding: 40px; text-align: center; color: var(--gray); font-size: 0.85rem; }
 .loading-state { padding: 40px; text-align: center; color: var(--gray); font-size: 0.85rem; }
-
+ 
 @media (max-width: 760px) {
   #dashboardScreen { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: relative; padding: 16px 0; }
@@ -297,6 +299,7 @@ textarea.field-textarea {
   .sidebar nav { display: flex; overflow-x: auto; }
   .sidebar nav a { border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
   .sidebar nav a.active { border-left-color: transparent; border-bottom-color: var(--gold); }
-  .main { padding: 24px 18px; }
+  .main { margin-left: 0; padding: 24px 18px; }
   .field-row { grid-template-columns: 1fr; }
 }
+ 
