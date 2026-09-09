@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-
+ 
 <!-- ============================== ÉCRAN DE CONNEXION ============================== -->
 <div id="loginScreen">
   <div class="login-card">
@@ -31,24 +31,24 @@
     </form>
   </div>
 </div>
-
+ 
 <!-- ============================== DASHBOARD ============================== -->
 <div id="dashboardScreen" style="display:none;">
   <aside class="sidebar">
     <div class="sidebar-brand">DIVERSIFY HOME</div>
     <div class="sidebar-tag">ESPACE ADMIN</div>
-    <nav>
+    <div class="admin-nav">
       <a href="#commandes" data-view="commandes" class="active">Commandes</a>
       <a href="#services" data-view="services">Services</a>
-    </nav>
+    </div>
     <div class="sidebar-footer">
       <div style="color:var(--white-dim);font-size:0.75rem;margin-bottom:10px;" id="adminName"></div>
       <button class="link-quiet" id="logoutBtn">Se déconnecter</button>
     </div>
   </aside>
-
+ 
   <main class="main">
-
+ 
     <!-- ── VUE COMMANDES ── -->
     <section id="view-commandes" class="view">
       <div class="main-header">
@@ -85,7 +85,7 @@
         </table>
       </div>
     </section>
-
+ 
     <!-- ── VUE SERVICES ── -->
     <section id="view-services" class="view" style="display:none;">
       <div class="main-header">
@@ -104,10 +104,10 @@
         <div class="loading-state">Chargement des services…</div>
       </div>
     </section>
-
+ 
   </main>
 </div>
-
+ 
 <!-- ============================== MODALE SERVICE (ajout/édition) ============================== -->
 <div class="modal-overlay" id="serviceModal" style="display:none;">
   <div class="modal-card">
@@ -159,7 +159,7 @@
     </form>
   </div>
 </div>
-
+ 
 <!-- ============================== MODALE DÉTAIL COMMANDE ============================== -->
 <div class="modal-overlay" id="orderModal" style="display:none;">
   <div class="modal-card">
@@ -186,7 +186,7 @@
     </div>
   </div>
 </div>
-
+ 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
 <script src="admin-auth.js"></script>
@@ -194,3 +194,4 @@
 <script src="admin-services.js"></script>
 </body>
 </html>
+ 
