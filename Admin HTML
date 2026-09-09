@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — DIVERSIFY HOME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dh_styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============================== ÉCRAN DE CONNEXION ============================== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">DIVERSIFY HOME</div>
+    <div class="login-tag">Espace admin</div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Mot de passe</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-gold" id="loginBtn">Se connecter</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ============================== DASHBOARD ============================== -->
+<div id="dashboardScreen" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand">DIVERSIFY HOME</div>
+    <div class="sidebar-tag">ESPACE ADMIN</div>
+    <nav>
+      <a href="#commandes" data-view="commandes" class="active">Commandes</a>
+      <a href="#services" data-view="services">Services</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div style="color:var(--white-dim);font-size:0.75rem;margin-bottom:10px;" id="adminName"></div>
+      <button class="link-quiet" id="logoutBtn">Se déconnecter</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ── VUE COMMANDES ── -->
+    <section id="view-commandes" class="view">
+      <div class="main-header">
+        <h1>Commandes</h1>
+      </div>
+      <div class="toolbar">
+        <select class="filter" id="statusFilter">
+          <option value="">Tous les statuts</option>
+          <option value="nouveau">Nouveau</option>
+          <option value="confirme">Confirmé</option>
+          <option value="en_cours">En cours</option>
+          <option value="livre">Livré</option>
+          <option value="annule">Annulé</option>
+        </select>
+        <button class="btn" id="refreshOrders">Actualiser</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Téléphone</th>
+              <th>Service</th>
+              <th>Message</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Affilié</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td colspan="8" class="loading-state">Chargement des commandes…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── VUE SERVICES ── -->
+    <section id="view-services" class="view" style="display:none;">
+      <div class="main-header">
+        <h1>Services</h1>
+        <button class="btn" id="addServiceBtn">Ajouter un service</button>
+      </div>
+      <div class="toolbar">
+        <select class="filter" id="serviceStatusFilter">
+          <option value="">Tous</option>
+          <option value="actif">Actifs</option>
+          <option value="inactif">Inactifs</option>
+        </select>
+        <button class="btn" id="refreshServices">Actualiser</button>
+      </div>
+      <div class="admin-services-grid" id="servicesAdminGrid">
+        <div class="loading-state">Chargement des services…</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================== MODALE SERVICE (ajout/édition) ============================== -->
+<div class="modal-overlay" id="serviceModal" style="display:none;">
+  <div class="modal-card">
+    <h2 id="serviceModalTitle">Ajouter un service</h2>
+    <form id="serviceForm">
+      <input type="hidden" id="svcId">
+      <div class="field">
+        <label for="svcName">Nom du service</label>
+        <input type="text" id="svcName" required>
+      </div>
+      <div class="field">
+        <label for="svcDesc">Description</label>
+        <textarea id="svcDesc" class="field-textarea"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="svcPriceDisplay">Prix affiché</label>
+          <input type="text" id="svcPriceDisplay" placeholder="Ex: Dès 5 000 FCFA">
+        </div>
+        <div class="field">
+          <label for="svcIcon">Icône (emoji)</label>
+          <input type="text" id="svcIcon" placeholder="📦">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="svcCommission">Commission max (%)</label>
+          <input type="number" id="svcCommission" min="0" max="10" step="0.5" value="8">
+        </div>
+        <div class="field">
+          <label for="svcOrder">Ordre d'affichage</label>
+          <input type="number" id="svcOrder" min="0" step="1" value="0">
+        </div>
+      </div>
+      <div class="field">
+        <label for="svcImage">Photo du service</label>
+        <input type="file" id="svcImage" accept="image/*">
+      </div>
+      <div class="checkbox-row" style="margin-top:14px;">
+        <input type="checkbox" id="svcActive" checked>
+        <label for="svcActive" style="margin:0;">Service actif (visible sur le site)</label>
+      </div>
+      <div class="login-error" id="serviceFormError"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-danger" id="deleteServiceBtn" style="display:none;">Désactiver</button>
+        <button type="button" class="btn" id="cancelServiceBtn">Annuler</button>
+        <button type="submit" class="btn-gold" id="saveServiceBtn" style="flex:1;">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============================== MODALE DÉTAIL COMMANDE ============================== -->
+<div class="modal-overlay" id="orderModal" style="display:none;">
+  <div class="modal-card">
+    <h2>Détail de la commande</h2>
+    <div id="orderDetailBody" style="color:var(--white-dim);font-size:0.85rem;line-height:1.9;"></div>
+    <div class="field" style="margin-top:16px;">
+      <label for="orderAmount">Montant validé (FCFA)</label>
+      <input type="number" id="orderAmount" min="0" step="100">
+    </div>
+    <div class="field">
+      <label for="orderStatus">Statut</label>
+      <select id="orderStatus" class="filter" style="width:100%;">
+        <option value="nouveau">Nouveau</option>
+        <option value="confirme">Confirmé</option>
+        <option value="en_cours">En cours</option>
+        <option value="livre">Livré</option>
+        <option value="annule">Annulé</option>
+      </select>
+    </div>
+    <div class="login-error" id="orderFormError"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="cancelOrderBtn">Fermer</button>
+      <button type="button" class="btn-gold" id="saveOrderBtn" style="flex:1;">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="admin-auth.js"></script>
+<script src="admin-orders.js"></script>
+<script src="admin-services.js"></script>
+</body>
+</html>
