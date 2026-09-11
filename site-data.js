@@ -3,31 +3,31 @@
 // Remplit : grille de services, liste déroulante du formulaire, tableau de
 // commissions, statistiques "À propos", liens WhatsApp/email, textes CMS.
 // ============================================================================
-
+ 
 window.DH_SETTINGS = {};
-
+ 
 // ----------------------------------------------------------------------------
 // Services (+ liste déroulante du formulaire + tableau de commissions)
 // ----------------------------------------------------------------------------
 async function loadServices() {
   const grid = document.getElementById('servicesGrid');
-  const select = document.getElementById('service');
+  const selects = document.querySelectorAll('.service-select');
   const commissionsGrid = document.getElementById('commissionsGrid');
-
+ 
   if (grid) grid.innerHTML = '<div class="dh-loading">Chargement des services…</div>';
-
+ 
   const { data: services, error } = await supabaseClient
     .from('services')
     .select('id, name, description, price_display, icon, image_url, max_commission_rate')
     .eq('is_active', true)
     .order('display_order', { ascending: true });
-
+ 
   if (error) {
     console.error('Erreur chargement services:', error);
     if (grid) grid.innerHTML = '<div class="dh-error">Impossible de charger les services pour le moment. Contactez-nous directement sur WhatsApp.</div>';
     return;
   }
-
+ 
   // --- Grille de services ---
   if (grid) {
     grid.innerHTML = '';
@@ -52,9 +52,9 @@ async function loadServices() {
       grid.appendChild(card);
     });
   }
-
-  // --- Liste déroulante du formulaire de commande ---
-  if (select) {
+ 
+  // --- Liste(s) déroulante(s) du formulaire de commande ---
+  selects.forEach(select => {
     select.innerHTML = '<option value="">— Sélectionner un service —</option>';
     (services || []).forEach(svc => {
       const opt = document.createElement('option');
@@ -62,8 +62,8 @@ async function loadServices() {
       opt.textContent = `${svc.icon ? svc.icon + ' ' : ''}${svc.name}`;
       select.appendChild(opt);
     });
-  }
-
+  });
+ 
   // --- Tableau des taux de commission (source unique de vérité) ---
   if (commissionsGrid) {
     commissionsGrid.innerHTML = (services || []).map(svc => `
@@ -73,10 +73,10 @@ async function loadServices() {
       </div>
     `).join('');
   }
-
+ 
   applyWaLinks();
 }
-
+ 
 // ----------------------------------------------------------------------------
 // Réglages globaux (WhatsApp, email, statistiques)
 // ----------------------------------------------------------------------------
@@ -86,11 +86,11 @@ async function loadSettings() {
     console.error('Erreur chargement settings:', error);
     return;
   }
-
+ 
   const settings = {};
   (data || []).forEach(row => { settings[row.key] = row.value; });
   window.DH_SETTINGS = settings;
-
+ 
   const statMap = {
     statServices: 'stat_services_count',
     statSatisfaction: 'stat_satisfaction',
@@ -101,17 +101,17 @@ async function loadSettings() {
     const el = document.getElementById(id);
     if (el && settings[key]) el.textContent = settings[key];
   });
-
+ 
   document.querySelectorAll('.js-email').forEach(el => {
     if (!settings.contact_email) return;
     el.href = 'mailto:' + settings.contact_email;
     const label = el.querySelector('.email-label');
     if (label) label.textContent = settings.contact_email;
   });
-
+ 
   applyWaLinks();
 }
-
+ 
 // ----------------------------------------------------------------------------
 // Contenu éditable (mini-CMS) — hero tag, paragraphes "À propos"
 // ----------------------------------------------------------------------------
@@ -123,20 +123,20 @@ async function loadSiteContent() {
   }
   const content = {};
   (data || []).forEach(row => { content[row.key] = row.value; });
-
+ 
   const map = { heroTag: 'hero_tag', aboutP1: 'about_p1', aboutP2: 'about_p2' };
   Object.entries(map).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el && content[key]) el.textContent = content[key];
   });
 }
-
+ 
 // ----------------------------------------------------------------------------
 // Mise à jour de tous les liens WhatsApp / affiliation de la page
 // ----------------------------------------------------------------------------
 function applyWaLinks() {
   const number = window.DH_SETTINGS.whatsapp_number || '22890771701';
-
+ 
   document.querySelectorAll('.js-wa').forEach(el => {
     const serviceName = el.getAttribute('data-service-name');
     const text = serviceName
@@ -144,17 +144,17 @@ function applyWaLinks() {
       : 'Bonjour, je souhaite passer une commande sur DIVERSIFY HOME';
     el.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
   });
-
+ 
   document.querySelectorAll('.js-wa-affiliate').forEach(el => {
     const text = "Bonjour, je souhaite rejoindre le programme d'affiliation DIVERSIFY HOME";
     el.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
   });
-
+ 
   document.querySelectorAll('.wa-number-label').forEach(el => {
     el.textContent = '+' + number.replace(/(\d{3})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
   });
 }
-
+ 
 // ----------------------------------------------------------------------------
 // Utilitaires
 // ----------------------------------------------------------------------------
@@ -163,7 +163,7 @@ function escapeHtml(str) {
   div.textContent = str == null ? '' : String(str);
   return div.innerHTML;
 }
-
+ 
 function getSessionId() {
   let id = sessionStorage.getItem('dh_session_id');
   if (!id) {
@@ -172,7 +172,7 @@ function getSessionId() {
   }
   return id;
 }
-
+ 
 async function trackEvent(eventType, payload = {}) {
   try {
     await supabaseClient.from('analytics_events').insert({
@@ -186,7 +186,7 @@ async function trackEvent(eventType, payload = {}) {
     console.warn('Analytics non envoyé:', e);
   }
 }
-
+ 
 // ----------------------------------------------------------------------------
 // Initialisation
 // ----------------------------------------------------------------------------
@@ -195,11 +195,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(location.search);
   const ref = params.get('ref');
   if (ref) sessionStorage.setItem('dh_referral_code', ref);
-
+ 
   await Promise.all([loadServices(), loadSettings(), loadSiteContent()]);
-
+ 
   trackEvent('page_view', { metadata: { ref: ref || null } });
-
+ 
   // Suivi des clics WhatsApp (tous liens, générés ou statiques)
   document.body.addEventListener('click', (e) => {
     const link = e.target.closest('a');
@@ -208,3 +208,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+ 
