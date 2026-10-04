@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
- 
+
 <!-- ============================== ÉCRAN DE CONNEXION ============================== -->
 <div id="loginScreen">
   <div class="login-card">
@@ -31,7 +31,7 @@
     </form>
   </div>
 </div>
- 
+
 <!-- ============================== DASHBOARD ============================== -->
 <div id="dashboardScreen" style="display:none;">
   <aside class="sidebar">
@@ -40,15 +40,16 @@
     <div class="admin-nav">
       <a href="#commandes" data-view="commandes" class="active">Commandes</a>
       <a href="#services" data-view="services">Services</a>
+      <a href="#affiliates" data-view="affiliates">Affiliés</a>
     </div>
     <div class="sidebar-footer">
       <div style="color:var(--white-dim);font-size:0.75rem;margin-bottom:10px;" id="adminName"></div>
       <button class="link-quiet" id="logoutBtn">Se déconnecter</button>
     </div>
   </aside>
- 
+
   <main class="main">
- 
+
     <!-- ── VUE COMMANDES ── -->
     <section id="view-commandes" class="view">
       <div class="main-header">
@@ -85,8 +86,17 @@
         </table>
       </div>
     </section>
- 
+
     <!-- ── VUE SERVICES ── -->
+    <section id="view-affiliates" class="view" style="display:none;">
+      <div class="main-header"><h1>Affiliés</h1></div>
+      <div class="toolbar"><button class="btn" id="refreshAffiliates">Actualiser</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Nom</th><th>Contact</th><th>Code / lien</th><th>Statut</th><th>Clics</th><th>Cmd</th><th>En attente</th><th>Payé</th><th>Actions</th></tr></thead>
+      <tbody id="affiliatesBody"><tr><td colspan="9" class="loading-state">Chargement…</td></tr></tbody></table></div>
+      <div id="affOrdersPanel" style="margin-top:24px;"></div>
+    </section>
+
+    
     <section id="view-services" class="view" style="display:none;">
       <div class="main-header">
         <h1>Services</h1>
@@ -104,10 +114,10 @@
         <div class="loading-state">Chargement des services…</div>
       </div>
     </section>
- 
+
   </main>
 </div>
- 
+
 <!-- ============================== MODALE SERVICE (ajout/édition) ============================== -->
 <div class="modal-overlay" id="serviceModal" style="display:none;">
   <div class="modal-card">
@@ -159,7 +169,7 @@
     </form>
   </div>
 </div>
- 
+
 <!-- ============================== MODALE DÉTAIL COMMANDE ============================== -->
 <div class="modal-overlay" id="orderModal" style="display:none;">
   <div class="modal-card">
@@ -186,12 +196,12 @@
     </div>
   </div>
 </div>
- 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
 <script src="admin-auth.js"></script>
 <script src="admin-orders.js"></script>
 <script src="admin-services.js"></script>
+<script src="admin-affiliates.js"></script>
 </body>
 </html>
- 
