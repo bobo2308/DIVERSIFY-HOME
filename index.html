@@ -6,10 +6,11 @@
 <title>DIVERSIFY HOME – Livraison • Tech • Design • Photo • Lomé</title>
 <meta name="description" content="DIVERSIFY HOME — Multi-services premium à Lomé, Togo. Livraison, réparation tech, design graphique, photo, impression, abonnements numériques et bien plus.">
 <link rel="stylesheet" href="dh_styles.css">
+<link rel="stylesheet" href="affiliate.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav id="navbar">
   <a class="nav-logo" href="#hero">DIVERSIFY <span>HOME</span></a>
@@ -22,7 +23,7 @@
   <a class="nav-cta" href="#" onclick="openOrderWizard(); return false;">Commander →</a>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
- 
+
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-close" id="mobileClose">✕</button>
@@ -32,7 +33,7 @@
   <a href="#affiliation" class="mob-link" onclick="closeMob()">Affiliation</a>
   <a href="#" target="_blank" class="mob-link js-wa" style="color:#25d366">WhatsApp →</a>
 </div>
- 
+
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
@@ -48,7 +49,7 @@
   </div>
   <div class="hero-scroll"><span>Défiler</span><div class="hero-scroll-line"></div></div>
 </section>
- 
+
 <!-- ABOUT -->
 <section id="about">
   <div class="about-text reveal">
@@ -66,7 +67,7 @@
     <div class="stat-card"><div class="stat-num" id="statPossibilites">∞</div><div class="stat-label">Possibilités</div></div>
   </div>
 </section>
- 
+
 <!-- SERVICES -->
 <section id="services">
   <div class="services-header reveal">
@@ -78,7 +79,7 @@
     <div class="dh-loading">Chargement des services…</div>
   </div>
 </section>
- 
+
 <!-- ORDER -->
 <section id="order">
   <div class="order-wrap">
@@ -122,7 +123,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- AFFILIATION -->
 <section id="affiliation">
   <div class="affil-wrap">
@@ -135,7 +136,8 @@
         <div class="affil-step"><div class="step-num">2</div><div class="step-content"><h4>Partagez & recommandez</h4><p>Envoyez votre lien à vos proches, sur vos réseaux ou dans vos groupes WhatsApp.</p></div></div>
         <div class="affil-step"><div class="step-num">3</div><div class="step-content"><h4>Touchez vos commissions</h4><p>À chaque commande validée via votre lien, vous gagnez une commission versée par Mobile Money.</p></div></div>
       </div>
-      <a class="affil-cta js-wa-affiliate" href="#" target="_blank">Rejoindre le programme →</a>
+      <a class="affil-cta js-aff-join" href="#">Rejoindre le programme →</a>
+      <a class="aff-subtle js-aff-space" href="#affilie">Déjà affilié ? Accéder à mon espace →</a>
     </div>
     <div class="reveal">
       <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:8px;color:var(--white)">Taux de commission par service</h3>
@@ -146,7 +148,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -181,7 +183,7 @@
     <span class="footer-copy">Tous droits réservés</span>
   </div>
 </footer>
- 
+
 <!-- WHATSAPP FLOAT (vrai logo SVG) -->
 <a class="wa-float js-wa" href="#" target="_blank" title="Nous écrire sur WhatsApp">
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -189,35 +191,35 @@
   </svg>
 </a>
 <div class="wa-tooltip">Écrire sur WhatsApp</div>
- 
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
- 
+
 <!-- ============================== COMMANDE PAS-À-PAS (WIZARD) ============================== -->
 <div class="wizard-overlay" id="wizardOverlay">
   <div class="wizard-box">
     <button class="wizard-close" id="wizardClose" aria-label="Fermer">✕</button>
- 
+
     <div class="wizard-progress">
       <span class="wizard-dot active" data-dot="1"></span>
       <span class="wizard-dot" data-dot="2"></span>
       <span class="wizard-dot" data-dot="3"></span>
       <span class="wizard-dot" data-dot="4"></span>
     </div>
- 
+
     <form id="wizardForm">
       <div class="wizard-step active" data-step="1">
         <label for="wizardName">Quel est votre nom complet ?</label>
         <input type="text" id="wizardName" placeholder="Votre nom" autocomplete="name">
         <p class="wizard-error" id="wizardError1"></p>
       </div>
- 
+
       <div class="wizard-step" data-step="2">
         <label for="wizardPhone">Quel est votre numéro WhatsApp ?</label>
         <input type="tel" id="wizardPhone" placeholder="+228 XX XX XX XX" autocomplete="tel">
         <p class="wizard-error" id="wizardError2"></p>
       </div>
- 
+
       <div class="wizard-step" data-step="3">
         <label for="wizardService">Quel service souhaitez-vous ?</label>
         <select id="wizardService" class="service-select">
@@ -225,19 +227,19 @@
         </select>
         <p class="wizard-error" id="wizardError3"></p>
       </div>
- 
+
       <div class="wizard-step" data-step="4">
         <label for="wizardMessage">Un détail à ajouter ? <span class="wizard-optional">(facultatif)</span></label>
         <textarea id="wizardMessage" placeholder="Décrivez votre besoin…"></textarea>
         <p class="wizard-error" id="wizardError4"></p>
       </div>
- 
+
       <div class="wizard-nav">
         <button type="button" class="wizard-btn-back" id="wizardBack" style="visibility:hidden;">← Retour</button>
         <button type="button" class="form-submit wizard-btn-next" id="wizardNext">Suivant →</button>
       </div>
     </form>
- 
+
     <div class="wizard-success" id="wizardSuccess" style="display:none;">
       <div class="wizard-success-icon">✅</div>
       <h3>Demande envoyée !</h3>
@@ -246,16 +248,16 @@
     </div>
   </div>
 </div>
- 
+
 <!-- Client Supabase (bibliothèque officielle) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- 
+
 <!-- Scripts du site, dans cet ordre précis -->
 <script src="supabase-client.js"></script>
 <script src="site-data.js"></script>
 <script src="order-form.js"></script>
 <script src="order-wizard.js"></script>
 <script src="main.js"></script>
+<script src="affiliate.js"></script>
 </body>
 </html>
- 
