@@ -9,11 +9,20 @@
 <link rel="stylesheet" href="affiliate.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Règles vitales : le formulaire pas à pas reste caché dans la page, il ne s'ouvre qu'en fenêtre */
+/* Règles vitales : le formulaire pas-à-pas reste caché dans la page, il ne s'ouvre qu'en fenêtre */
 .wizard-overlay{display:none;position:fixed;inset:0;z-index:9500;align-items:center;justify-content:center}
 .wizard-overlay.open{display:flex}
 .wizard-step{display:none}.wizard-step.active{display:block}
 .wizard-error:empty{display:none}
+/* Fenêtre de commande : noir et or (indépendante du thème bleu du site) */
+.wizard-box{--black:#0a0a0a;--deep:#111111;--gold:#c9a84c;--gold-light:#e2c07a;--gold-dark:#9a7730;--white:#f5f5f0;--white-dim:#cccccc;--gray:#888888;--card-bg:#181818;position:relative;width:100%;max-width:520px;box-sizing:border-box;padding:40px 32px;background:#111111;border:1px solid #c9a84c;color:#f5f5f0}
+.wizard-box .form-submit,.wizard-box .wizard-btn-next{background:#c9a84c;color:#0a0a0a}
+.wizard-box .form-submit:hover{background:#e2c07a}
+.wizard-box input,.wizard-box select,.wizard-box textarea{background:#181818;border:1px solid rgba(201,168,76,.3);color:#f5f5f0}
+.wizard-overlay{background:rgba(0,0,0,.85)}
+.priv-overlay{display:none;position:fixed;inset:0;z-index:9600;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.85)}
+.priv-overlay.open{display:flex}
+.priv-box{max-height:90vh;overflow-y:auto;max-width:680px;width:100%}
 </style>
 </head>
 <body>
@@ -298,7 +307,7 @@
     <p>Nous ne vendons jamais vos données et ne les utilisons pas pour de la publicité.</p>
 
     <h3>4. Avec qui sont-elles partagées ?</h3>
-    <p>Uniquement avec les prestataires techniques nécessaires au site : base de données et authentification, hébergement , Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
+    <p>Uniquement avec les prestataires techniques nécessaires au site :Base de données et authentification, hébergement, Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
 
     <h3>5. Combien de temps ?</h3>
     <p>Pendant la durée nécessaire au suivi de votre commande et à nos obligations de gestion, puis elles sont supprimées ou anonymisées. Vous pouvez demander leur suppression à tout moment.</p>
