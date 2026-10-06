@@ -8,6 +8,13 @@
 <link rel="stylesheet" href="dh_styles.css">
 <link rel="stylesheet" href="affiliate.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Règles vitales : le formulaire pas-à-pas reste caché dans la page, il ne s'ouvre qu'en fenêtre */
+.wizard-overlay{display:none;position:fixed;inset:0;z-index:9500;align-items:center;justify-content:center}
+.wizard-overlay.open{display:flex}
+.wizard-step{display:none}.wizard-step.active{display:block}
+.wizard-error:empty{display:none}
+</style>
 </head>
 <body>
 
@@ -113,6 +120,7 @@
         </div>
         <div class="form-group"><label for="message">Détails de votre demande</label><textarea id="message" placeholder="Décrivez votre besoin…"></textarea></div>
         <button class="form-submit" onclick="submitOrder()">Envoyer ma demande →</button>
+        <p class="privacy-note">🔒 Vos informations restent confidentielles. <a href="#confidentialite" class="js-privacy">Politique de confidentialité</a></p>
       </div>
       <div id="orderSuccess" style="display:none;text-align:center;padding:48px 24px;border:1px solid var(--gold);background:rgba(201,168,76,.05)">
         <div style="font-size:2.5rem;margin-bottom:16px">✅</div>
@@ -180,7 +188,12 @@
   </div>
   <div class="footer-bottom">
     <span class="footer-copy">© 2026 DIVERSIFY HOME — Lomé, Togo</span>
+    <a href="#confidentialite" class="footer-copy footer-priv js-privacy">Politique de confidentialité</a>
     <span class="footer-copy">Tous droits réservés</span>
+  </div>
+  <div class="footer-powered">
+    <span class="powered-label">Propulsé par</span>
+    <span class="powered-name">Bobo Léger</span>
   </div>
 </footer>
 
@@ -256,8 +269,53 @@
 <script src="supabase-client.js"></script>
 <script src="site-data.js"></script>
 <script src="order-form.js"></script>
-<script src="order-wizard.js"></script>
+<script src="order-classic.js"></script>
+
+<!-- ============================== POLITIQUE DE CONFIDENTIALITÉ ============================== -->
+<div class="priv-overlay" id="privOverlay" aria-hidden="true">
+  <div class="priv-box" role="dialog" aria-label="Politique de confidentialité">
+    <button class="priv-close" id="privClose" aria-label="Fermer">✕</button>
+    <span class="section-tag">Vos données, votre confiance</span>
+    <h2 class="priv-title">Politique de confidentialité</h2>
+    <p class="priv-date">Dernière mise à jour : octobre 2026</p>
+
+    <h3>1. Qui sommes-nous ?</h3>
+    <p>DIVERSIFY HOME est une entreprise de services basée à Lomé (Togo). Pour toute question sur vos données, écrivez-nous sur WhatsApp ou à <a href="mailto:bobobi2007@gmail.com">bobobi2007@gmail.com</a>.</p>
+
+    <h3>2. Les informations que nous collectons</h3>
+    <ul>
+      <li><b>Lorsque vous commandez :</b> votre nom, votre numéro WhatsApp, le service choisi et le détail de votre demande.</li>
+      <li><b>Si vous rejoignez le programme d'affiliation :</b> votre nom, téléphone, email (facultatif) et mot de passe (stocké de façon chiffrée), ainsi que vos statistiques (clics, commandes, commissions).</li>
+      <li><b>Sur le navigateur :</b> le code de parrainage d'un affilié, conservé pour lui attribuer correctement une commande, et des statistiques de visite internes.</li>
+    </ul>
+
+    <h3>3. Pourquoi nous les utilisons</h3>
+    <ul>
+      <li>Traiter votre demande, vous contacter et vous envoyer un devis.</li>
+      <li>Gérer le programme d'affiliation et calculer les commissions.</li>
+      <li>Améliorer le fonctionnement et la sécurité du site.</li>
+    </ul>
+    <p>Nous ne vendons jamais vos données et ne les utilisons pas pour de la publicité.</p>
+
+    <h3>4. Avec qui sont-elles partagées ?</h3>
+    <p>Uniquement avec les prestataires techniques nécessaires au site : base de données et authentification, hébergement , Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
+
+    <h3>5. Combien de temps ?</h3>
+    <p>Pendant la durée nécessaire au suivi de votre commande et à nos obligations de gestion, puis elles sont supprimées ou anonymisées. Vous pouvez demander leur suppression à tout moment.</p>
+
+    <h3>6. Sécurité</h3>
+    <p>Le site utilise une connexion sécurisée (HTTPS). L'accès aux données est restreint et chaque affilié n'accède qu'à ses propres informations.</p>
+
+    <h3>7. Vos droits</h3>
+    <p>Vous pouvez demander à accéder à vos données, à les corriger, à les supprimer ou à vous opposer à leur utilisation, conformément à la législation togolaise sur la protection des données personnelles. Il suffit de nous écrire : nous répondons rapidement.</p>
+
+    <h3>8. Modifications</h3>
+    <p>Nous pouvons mettre à jour cette politique. La date de dernière mise à jour figure en haut de cette page.</p>
+  </div>
+</div>
+
 <script src="main.js"></script>
 <script src="affiliate.js"></script>
+<script src="privacy.js"></script>
 </body>
 </html>
