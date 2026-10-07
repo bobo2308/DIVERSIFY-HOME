@@ -9,33 +9,22 @@ window.DH_SETTINGS = {};
 // ----------------------------------------------------------------------------
 // Services (+ liste déroulante du formulaire + tableau de commissions)
 // ----------------------------------------------------------------------------
-async function loadServices() {
+const DH_SERVICES_CACHE = 'dh_services_v1';
+ 
+// Dessine la grille, la liste déroulante et le tableau des commissions
+function renderServices(services) {
   const grid = document.getElementById('servicesGrid');
-  const selects = document.querySelectorAll('.service-select');
+  const select = document.getElementById('service');
   const commissionsGrid = document.getElementById('commissionsGrid');
  
-  if (grid) grid.innerHTML = '<div class="dh-loading">Chargement des services…</div>';
- 
-  const { data: services, error } = await supabaseClient
-    .from('services')
-    .select('id, name, description, price_display, icon, image_url, max_commission_rate')
-    .eq('is_active', true)
-    .order('display_order', { ascending: true });
- 
-  if (error) {
-    console.error('Erreur chargement services:', error);
-    if (grid) grid.innerHTML = '<div class="dh-error">Impossible de charger les services pour le moment. Contactez-nous directement sur WhatsApp.</div>';
-    return;
-  }
- 
-  // --- Grille de services ---
   if (grid) {
     grid.innerHTML = '';
-    (services || []).forEach(svc => {
+    (services || []).forEach((svc, i) => {
       const card = document.createElement('div');
       card.className = 'service-card';
+      // Les 6 premières photos se chargent tout de suite (les 3 premières en priorité), les autres au défilement
       const imgHtml = svc.image_url
-        ? `<div class="svc-img"><img src="${svc.image_url}" alt="${escapeHtml(svc.name)}" loading="lazy"></div>`
+        ? `<div class="svc-img"><img src="${svc.image_url}" alt="${escapeHtml(svc.name)}" decoding="async" ${i < 6 ? 'loading="eager"' : 'loading="lazy"'} ${i < 3 ? 'fetchpriority="high"' : ''}></div>`
         : '';
       card.innerHTML = `
         ${imgHtml}
@@ -53,8 +42,8 @@ async function loadServices() {
     });
   }
  
-  // --- Liste(s) déroulante(s) du formulaire de commande ---
-  selects.forEach(select => {
+  if (select) {
+    const current = select.value;
     select.innerHTML = '<option value="">— Sélectionner un service —</option>';
     (services || []).forEach(svc => {
       const opt = document.createElement('option');
@@ -62,9 +51,9 @@ async function loadServices() {
       opt.textContent = `${svc.icon ? svc.icon + ' ' : ''}${svc.name}`;
       select.appendChild(opt);
     });
-  });
+    if (current) select.value = current;
+  }
  
-  // --- Tableau des taux de commission (source unique de vérité) ---
   if (commissionsGrid) {
     commissionsGrid.innerHTML = (services || []).map(svc => `
       <div class="commission-row">
@@ -75,6 +64,37 @@ async function loadServices() {
   }
  
   applyWaLinks();
+}
+ 
+// Chargement rapide : 1) affichage immédiat depuis la mémoire du téléphone (visites suivantes),
+// 2) données lues par la requête lancée dès le début de la page (voir <head>), 3) mise à jour si ça a changé.
+async function loadServices() {
+  const grid = document.getElementById('servicesGrid');
+ 
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(DH_SERVICES_CACHE) || 'null'); } catch (e) {}
+  if (Array.isArray(cached) && cached.length) renderServices(cached);
+  else if (grid) grid.innerHTML = '<div class="dh-loading">Chargement des services…</div>';
+ 
+  let services = null, error = null;
+  try { if (window.__dhServices) services = await window.__dhServices; } catch (e) {}
+  if (!Array.isArray(services)) {                       // plan B : le client Supabase habituel
+    const res = await supabaseClient
+      .from('services')
+      .select('id, name, description, price_display, icon, image_url, max_commission_rate')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+    services = res.data; error = res.error;
+  }
+ 
+  if (error || !Array.isArray(services)) {
+    console.error('Erreur chargement services:', error);
+    if (!cached && grid) grid.innerHTML = '<div class="dh-error">Impossible de charger les services pour le moment. Contactez-nous directement sur WhatsApp.</div>';
+    return;
+  }
+ 
+  try { localStorage.setItem(DH_SERVICES_CACHE, JSON.stringify(services)); } catch (e) {}
+  if (JSON.stringify(services) !== JSON.stringify(cached)) renderServices(services);
 }
  
 // ----------------------------------------------------------------------------
