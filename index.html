@@ -24,9 +24,17 @@
 .priv-overlay.open{display:flex}
 .priv-box{max-height:90vh;overflow-y:auto;max-width:680px;width:100%}
 </style>
+<link rel="preconnect" href="https://zhxkmmbrbhkcgylubijm.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script>
+/* Lance la requête des services dès le début de la page, sans attendre les scripts. */
+window.__dhServices = fetch('https://zhxkmmbrbhkcgylubijm.supabase.co/rest/v1/services?select=id,name,description,price_display,icon,image_url,max_commission_rate&is_active=eq.true&order=display_order.asc',
+  { headers: { apikey: 'sb_publishable_YXIsoR1cNBCvB6dw2y3wIg_k3UxHkIY' } })
+  .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+</script>
 </head>
 <body>
-
+ 
 <!-- NAV -->
 <nav id="navbar">
   <a class="nav-logo" href="#hero">DIVERSIFY <span>HOME</span></a>
@@ -39,7 +47,7 @@
   <a class="nav-cta" href="#" onclick="openOrderWizard(); return false;">Commander →</a>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
-
+ 
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-close" id="mobileClose">✕</button>
@@ -49,7 +57,7 @@
   <a href="#affiliation" class="mob-link" onclick="closeMob()">Affiliation</a>
   <a href="#" target="_blank" class="mob-link js-wa" style="color:#25d366">WhatsApp →</a>
 </div>
-
+ 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
@@ -65,7 +73,7 @@
   </div>
   <div class="hero-scroll"><span>Défiler</span><div class="hero-scroll-line"></div></div>
 </section>
-
+ 
 <!-- ABOUT -->
 <section id="about">
   <div class="about-text reveal">
@@ -83,7 +91,7 @@
     <div class="stat-card"><div class="stat-num" id="statPossibilites">∞</div><div class="stat-label">Possibilités</div></div>
   </div>
 </section>
-
+ 
 <!-- SERVICES -->
 <section id="services">
   <div class="services-header reveal">
@@ -95,7 +103,7 @@
     <div class="dh-loading">Chargement des services…</div>
   </div>
 </section>
-
+ 
 <!-- ORDER -->
 <section id="order">
   <div class="order-wrap">
@@ -140,7 +148,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- AFFILIATION -->
 <section id="affiliation">
   <div class="affil-wrap">
@@ -165,7 +173,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -205,7 +213,7 @@
     <span class="powered-name">Bobo Léger</span>
   </div>
 </footer>
-
+ 
 <!-- WHATSAPP FLOAT (vrai logo SVG) -->
 <a class="wa-float js-wa" href="#" target="_blank" title="Nous écrire sur WhatsApp">
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -213,35 +221,35 @@
   </svg>
 </a>
 <div class="wa-tooltip">Écrire sur WhatsApp</div>
-
+ 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
+ 
 <!-- ============================== COMMANDE PAS-À-PAS (WIZARD) ============================== -->
 <div class="wizard-overlay" id="wizardOverlay">
   <div class="wizard-box">
     <button class="wizard-close" id="wizardClose" aria-label="Fermer">✕</button>
-
+ 
     <div class="wizard-progress">
       <span class="wizard-dot active" data-dot="1"></span>
       <span class="wizard-dot" data-dot="2"></span>
       <span class="wizard-dot" data-dot="3"></span>
       <span class="wizard-dot" data-dot="4"></span>
     </div>
-
+ 
     <form id="wizardForm">
       <div class="wizard-step active" data-step="1">
         <label for="wizardName">Quel est votre nom complet ?</label>
         <input type="text" id="wizardName" placeholder="Votre nom" autocomplete="name">
         <p class="wizard-error" id="wizardError1"></p>
       </div>
-
+ 
       <div class="wizard-step" data-step="2">
         <label for="wizardPhone">Quel est votre numéro WhatsApp ?</label>
         <input type="tel" id="wizardPhone" placeholder="+228 XX XX XX XX" autocomplete="tel">
         <p class="wizard-error" id="wizardError2"></p>
       </div>
-
+ 
       <div class="wizard-step" data-step="3">
         <label for="wizardService">Quel service souhaitez-vous ?</label>
         <select id="wizardService" class="service-select">
@@ -249,19 +257,19 @@
         </select>
         <p class="wizard-error" id="wizardError3"></p>
       </div>
-
+ 
       <div class="wizard-step" data-step="4">
         <label for="wizardMessage">Un détail à ajouter ? <span class="wizard-optional">(facultatif)</span></label>
         <textarea id="wizardMessage" placeholder="Décrivez votre besoin…"></textarea>
         <p class="wizard-error" id="wizardError4"></p>
       </div>
-
+ 
       <div class="wizard-nav">
         <button type="button" class="wizard-btn-back" id="wizardBack" style="visibility:hidden;">← Retour</button>
         <button type="button" class="form-submit wizard-btn-next" id="wizardNext">Suivant →</button>
       </div>
     </form>
-
+ 
     <div class="wizard-success" id="wizardSuccess" style="display:none;">
       <div class="wizard-success-icon">✅</div>
       <h3>Demande envoyée !</h3>
@@ -270,16 +278,16 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- Client Supabase (bibliothèque officielle) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+ 
 <!-- Scripts du site, dans cet ordre précis -->
 <script src="supabase-client.js"></script>
 <script src="site-data.js"></script>
 <script src="order-form.js"></script>
 <script src="order-classic.js"></script>
-
+ 
 <!-- ============================== POLITIQUE DE CONFIDENTIALITÉ ============================== -->
 <div class="priv-overlay" id="privOverlay" aria-hidden="true">
   <div class="priv-box" role="dialog" aria-label="Politique de confidentialité">
@@ -287,17 +295,17 @@
     <span class="section-tag">Vos données, votre confiance</span>
     <h2 class="priv-title">Politique de confidentialité</h2>
     <p class="priv-date">Dernière mise à jour : octobre 2026</p>
-
+ 
     <h3>1. Qui sommes-nous ?</h3>
     <p>DIVERSIFY HOME est une entreprise de services basée à Lomé (Togo). Pour toute question sur vos données, écrivez-nous sur WhatsApp ou à <a href="mailto:bobobi2007@gmail.com">bobobi2007@gmail.com</a>.</p>
-
+ 
     <h3>2. Les informations que nous collectons</h3>
     <ul>
       <li><b>Lorsque vous commandez :</b> votre nom, votre numéro WhatsApp, le service choisi et le détail de votre demande.</li>
       <li><b>Si vous rejoignez le programme d'affiliation :</b> votre nom, téléphone, email (facultatif) et mot de passe (stocké de façon chiffrée), ainsi que vos statistiques (clics, commandes, commissions).</li>
       <li><b>Sur le navigateur :</b> le code de parrainage d'un affilié, conservé pour lui attribuer correctement une commande, et des statistiques de visite internes.</li>
     </ul>
-
+ 
     <h3>3. Pourquoi nous les utilisons</h3>
     <ul>
       <li>Traiter votre demande, vous contacter et vous envoyer un devis.</li>
@@ -305,26 +313,27 @@
       <li>Améliorer le fonctionnement et la sécurité du site.</li>
     </ul>
     <p>Nous ne vendons jamais vos données et ne les utilisons pas pour de la publicité.</p>
-
+ 
     <h3>4. Avec qui sont-elles partagées ?</h3>
-    <p>Uniquement avec les prestataires techniques nécessaires au site : base de données et authentification, hébergement, Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
-
+    <p>Uniquement avec les prestataires techniques nécessaires au site : Supabase (base de données et authentification), Vercel (hébergement), Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
+ 
     <h3>5. Combien de temps ?</h3>
     <p>Pendant la durée nécessaire au suivi de votre commande et à nos obligations de gestion, puis elles sont supprimées ou anonymisées. Vous pouvez demander leur suppression à tout moment.</p>
-
+ 
     <h3>6. Sécurité</h3>
     <p>Le site utilise une connexion sécurisée (HTTPS). L'accès aux données est restreint et chaque affilié n'accède qu'à ses propres informations.</p>
-
+ 
     <h3>7. Vos droits</h3>
     <p>Vous pouvez demander à accéder à vos données, à les corriger, à les supprimer ou à vous opposer à leur utilisation, conformément à la législation togolaise sur la protection des données personnelles. Il suffit de nous écrire : nous répondons rapidement.</p>
-
+ 
     <h3>8. Modifications</h3>
     <p>Nous pouvons mettre à jour cette politique. La date de dernière mise à jour figure en haut de cette page.</p>
   </div>
 </div>
-
+ 
 <script src="main.js"></script>
 <script src="affiliate.js"></script>
 <script src="privacy.js"></script>
 </body>
 </html>
+ 
