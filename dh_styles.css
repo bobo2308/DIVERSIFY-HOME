@@ -201,17 +201,17 @@ footer{background:#050810;border-top:1px solid rgba(91,155,255,0.15);padding:64p
 .svc-cta:hover { border-color: var(--gold); }
 
 /* ── ÉTATS DE CHARGEMENT DYNAMIQUE ── */
- /* ===== À PROPOS + BAS DE PAGE : blanc ===== */
+/* ===== À PROPOS + BAS DE PAGE : gris perle ===== */
 #about,footer{
-  --black:#ffffff; --deep:#ffffff; --gold:#1d5fd6; --gold-light:#3b7bf0; --gold-dark:#174cb0;
-  --white:#111111; --white-dim:#2b2f38; --gray:#3a404c; --card-bg:#f6f8fb;
-  background:#ffffff; color:#111111;
+  --black:#e6e8ec; --deep:#e6e8ec; --gold:#1d5fd6; --gold-light:#3b7bf0; --gold-dark:#174cb0;
+  --white:#111111; --white-dim:#2b2f38; --gray:#3a404c; --card-bg:#f3f4f7;
+  background:#e6e8ec; color:#111111;
 }
-#about{border-top:1px solid #e6e9ef}
-#about .stat-card{border:1px solid #e0e4ec}
+#about{border-top:1px solid #cfd3da}
+#about .stat-card{border:1px solid #cfd3da}
 #about .stat-card:hover{border-color:#1d5fd6}
-footer{border-top:1px solid #e6e9ef}
-.footer-bottom{border-top:1px solid #e6e9ef}
+footer{border-top:1px solid #cfd3da}
+.footer-bottom{border-top:1px solid #cfd3da}
  
 /* ===== NOS SERVICES : beige ===== */
 #services{
@@ -241,4 +241,8 @@ footer{border-top:1px solid #e6e9ef}
 #affiliation .affil-cta:hover{background:#e2c07a}
 #affiliation .commission-row{border:1px solid rgba(201,168,76,0.1)}
 #affiliation .commission-row:hover{background:rgba(201,168,76,0.05)}
+ 
+/* ===== BOUTONS WHATSAPP : vert et gras ===== */
+#hero .btn-gold.js-wa,#order .btn-gold.js-wa{background:#1fa855;color:#ffffff;font-weight:700}
+#hero .btn-gold.js-wa:hover,#order .btn-gold.js-wa:hover{background:#25c063}
  
