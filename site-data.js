@@ -9,12 +9,17 @@ window.DH_SETTINGS = {};
 // ----------------------------------------------------------------------------
 // Services (+ liste déroulante du formulaire + tableau de commissions)
 // ----------------------------------------------------------------------------
-const DH_SERVICES_CACHE = 'dh_services_v1';
+const DH_SERVICES_CACHE = 'dh_services_v2';
  
 // Dessine la grille, la liste déroulante et le tableau des commissions
+// Photo servie par le site lui-même (Vercel) quand c'est la photo d'origine ; sinon celle de Supabase
+function dhImgSrc(svc) {
+  if (svc.slug && svc.image_path === svc.slug + '.jpg') return '/service-images/' + svc.slug + '.jpg';
+  return svc.image_url;
+}
+ 
 function renderServices(services) {
   const grid = document.getElementById('servicesGrid');
-  const select = document.getElementById('service');
   const commissionsGrid = document.getElementById('commissionsGrid');
  
   if (grid) {
@@ -24,7 +29,7 @@ function renderServices(services) {
       card.className = 'service-card';
       // Les 6 premières photos se chargent tout de suite (les 3 premières en priorité), les autres au défilement
       const imgHtml = svc.image_url
-        ? `<div class="svc-img"><img src="${svc.image_url}" alt="${escapeHtml(svc.name)}" decoding="async" ${i < 6 ? 'loading="eager"' : 'loading="lazy"'} ${i < 3 ? 'fetchpriority="high"' : ''}></div>`
+        ? `<div class="svc-img"><img src="${dhImgSrc(svc)}" data-f="${svc.image_url}" onerror="if(this.dataset.f){var f=this.dataset.f;this.dataset.f='';this.src=f;}" alt="${escapeHtml(svc.name)}" decoding="async" ${i < 6 ? 'loading="eager"' : 'loading="lazy"'} ${i < 3 ? 'fetchpriority="high"' : ''}></div>`
         : '';
       card.innerHTML = `
         ${imgHtml}
@@ -42,17 +47,19 @@ function renderServices(services) {
     });
   }
  
-  if (select) {
-    const current = select.value;
-    select.innerHTML = '<option value="">— Sélectionner un service —</option>';
+  ['service', 'wizardService'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— Sélectionner un service —</option>';
     (services || []).forEach(svc => {
       const opt = document.createElement('option');
       opt.value = svc.id;
       opt.textContent = `${svc.icon ? svc.icon + ' ' : ''}${svc.name}`;
-      select.appendChild(opt);
+      sel.appendChild(opt);
     });
-    if (current) select.value = current;
-  }
+    if (current) sel.value = current;
+  });
  
   if (commissionsGrid) {
     commissionsGrid.innerHTML = (services || []).map(svc => `
@@ -81,7 +88,7 @@ async function loadServices() {
   if (!Array.isArray(services)) {                       // plan B : le client Supabase habituel
     const res = await supabaseClient
       .from('services')
-      .select('id, name, description, price_display, icon, image_url, max_commission_rate')
+      .select('id, slug, name, description, price_display, icon, image_url, image_path, max_commission_rate')
       .eq('is_active', true)
       .order('display_order', { ascending: true });
     services = res.data; error = res.error;
