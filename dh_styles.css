@@ -201,6 +201,40 @@ footer{background:#050810;border-top:1px solid rgba(91,155,255,0.15);padding:64p
 .svc-cta:hover { border-color: var(--gold); }
 
 /* ── ÉTATS DE CHARGEMENT DYNAMIQUE ── */
+/* ===== SECTIONS CLAIRES : à propos, commander, affiliés, bas de page (blanc) ===== */
+#about,#order,#affiliation,footer{
+  --black:#ffffff; --deep:#ffffff; --gold:#1d5fd6; --gold-light:#3b7bf0; --gold-dark:#174cb0;
+  --white:#111111; --white-dim:#2b2f38; --gray:#3a404c; --card-bg:#f6f8fb;
+  background:#ffffff; color:#111111;
+}
+#about,#order,#affiliation{border-top:1px solid #e6e9ef}
+#about .stat-card{border:1px solid #e0e4ec}
+#about .stat-card:hover{border-color:#1d5fd6}
+#order .order-contact a{border:1px solid #d9dde5}
+#order input,#order select,#order textarea{background:#ffffff;border:1px solid #cfd4dc;color:#111111}
+#order input::placeholder,#order textarea::placeholder{color:#777777}
+#order input:focus,#order select:focus,#order textarea:focus{border-color:#1d5fd6}
+#order select option{background:#ffffff;color:#111111}
+#order .form-submit{background:#1fa855;color:#ffffff}
+#order .form-submit:hover{background:#25c063}
+#affiliation .commission-row{border:1px solid #e0e4ec}
+#affiliation .commission-row:hover{background:rgba(29,95,214,0.06)}
+footer{border-top:1px solid #e6e9ef}
+.footer-bottom{border-top:1px solid #e6e9ef}
+ 
+/* ===== NOS SERVICES : beige ===== */
+#services{
+  --deep:#f6f0e3; --card-bg:#ffffff; --gold:#a0691f; --gold-light:#b87d2d;
+  --white:#111111; --white-dim:#2b2f38; --gray:#3a404c;
+  background:#f6f0e3; color:#111111; border-top:1px solid #e4d9bf;
+}
+#services .service-card{border:1px solid #e4d9bf}
+#services .service-card:hover{background:#fffaf0;border-color:#a0691f}
+#services .svc-img{background:#eee}
+#services .svc-img img{filter:none}
+#services .svc-footer{border-top:1px solid #e4d9bf}
+#services .svc-cta{border-bottom:1px solid rgba(160,105,31,0.4)}
+ 
 .dh-loading{grid-column:1/-1;text-align:center;padding:40px 0;color:var(--gray);font-size:.8rem;letter-spacing:1px}
 .dh-error{grid-column:1/-1;text-align:center;padding:40px 0;color:var(--gray);font-size:.8rem}
 .btn-gold.js-wa{background:#1fa855;color:#fff}
