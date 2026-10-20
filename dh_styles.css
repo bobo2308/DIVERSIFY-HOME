@@ -287,3 +287,12 @@ footer{border-top:1px solid #cfd3da}
 .nav-cta{background:#1fa855;color:#ffffff;font-weight:700}
 .nav-cta:hover{background:#25c063}
  
+/* ===== AFFILIÉS : « recommandant », pourcentages, bouton en bleu et gras ===== */
+#affiliation .section-title em{color:#1d5fd6;font-weight:800}
+#affiliation .commission-pct{color:#1d5fd6;font-weight:900}
+#affiliation .affil-cta{background:#1d5fd6;color:#ffffff;font-weight:800}
+#affiliation .affil-cta:hover{background:#174cb0}
+ 
+/* ===== BAS DE PAGE : « Bobo Léger » en bleu et gras ===== */
+footer .powered-name{color:#1d5fd6;font-weight:800}
+ 
