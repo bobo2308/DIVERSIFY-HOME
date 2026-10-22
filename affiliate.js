@@ -9,8 +9,15 @@
   const link = code => location.origin + '/?ref=' + code;
   const $ = id => document.getElementById(id);
   const STATUS = { pending: 'En attente de validation', active: 'Actif', suspended: 'Suspendu' };
+  const orderState = o => {
+    if (o.commission_status === 'paid') return '✅ Payée';
+    if (o.commission_status === 'cancelled') return 'Annulée';
+    if (o.commission_status === 'pending' && o.status === 'livre') return '<span class="aff-ok">✅ Gain accessible</span>';
+    if (o.commission_status === 'pending') return '<span class="aff-wait">⏳ Attendre la validation pour accéder au gain</span>';
+    return '—';
+  };
   const OSTAT = { none: '—', pending: 'À payer', paid: 'Payée', cancelled: 'Annulée' };
- 
+
   // ---- 1) Attribution : capture, validation serveur, persistance (localStorage + sessionStorage) ----
   async function captureReferral() {
     const ref = (new URLSearchParams(location.search).get('ref') || '').trim().toUpperCase();
@@ -25,7 +32,7 @@
       if (saved) sessionStorage.setItem(KEY, saved);    // order-form.js / wizard lisent sessionStorage
     }
   }
- 
+
   // ---- 2) Interface (modale construite dynamiquement, styles dans affiliate.css) ----
   function overlay() {
     let o = $('affOverlay');
@@ -39,7 +46,7 @@
   }
   function close() { $('affOverlay').classList.remove('open'); if (location.hash === '#affilie') history.replaceState(null, '', location.pathname); }
   function show(html) { overlay().classList.add('open'); $('affBody').innerHTML = html; }
- 
+
   const PAY = { tmoney: 'T-Money', flooz: 'Flooz', autre: 'Autre' };
   const payPills = sel => `<div class="aff-pay-row" id="affPayRow">${Object.keys(PAY).map(k =>
     `<button type="button" class="aff-pay${k === sel ? ' on' : ''}" data-m="${k}">${PAY[k]}</button>`).join('')}</div>`;
@@ -52,7 +59,7 @@
     });
     return () => cur;
   }
- 
+
   let getPayMethod = () => 'tmoney';
   function registerView() {
     show(`<span class="section-tag">Programme d'affiliation</span><h3 class="aff-title">Rejoindre le programme</h3>
@@ -89,7 +96,7 @@
     $('toReg').onclick = e => { e.preventDefault(); registerView(); };
     $('affLoginForm').onsubmit = login;
   }
- 
+
   async function register(e) {
     e.preventDefault();
     const name = $('arName').value.trim(), phone = $('arPhone').value.trim(), email = $('arEmail').value.trim();
@@ -110,7 +117,7 @@
     if (!data.session) return show('<h3 class="aff-title">Vérifiez votre email</h3><p class="aff-note">Un lien de confirmation vous a été envoyé. Cliquez dessus puis connectez-vous.</p>');
     dashboard();
   }
- 
+
   async function login(e) {
     e.preventDefault();
     const id = $('alId').value.trim(), err = $('affErr'), btn = $('alBtn');
@@ -120,7 +127,7 @@
     if (error) return err.textContent = 'Identifiants incorrects.';
     dashboard();
   }
- 
+
   function editPayout(s) {
     show(`<span class="section-tag">Mon espace affilié</span><h3 class="aff-title">Où recevoir mes gains</h3>
       <form id="affPayForm" novalidate>
@@ -144,7 +151,7 @@
       dashboard();
     };
   }
- 
+
   async function dashboard() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return loginView();
@@ -155,7 +162,7 @@
     const url = link(s.code);
     const rows = (orders || []).map(o => `<tr><td>${new Date(o.created_at).toLocaleDateString('fr-FR')}</td><td>${escapeHtml(o.client || '—')}</td>
       <td>${escapeHtml(o.service || '—')}</td><td>${o.amount ? fmt(o.amount) : '—'}</td><td>${o.commission ? fmt(o.commission) : '—'}</td>
-      <td>${OSTAT[o.commission_status] || o.status}</td></tr>`).join('') || '<tr><td colspan="6" class="aff-note">Aucune commande pour le moment.</td></tr>';
+      <td>${orderState(o)}</td></tr>`).join('') || '<tr><td colspan="6" class="aff-note">Aucune commande pour le moment.</td></tr>';
     const stat = (l, v) => `<div class="aff-stat"><b>${v}</b><span>${l}</span></div>`;
     show(`<span class="section-tag">Mon espace affilié</span><h3 class="aff-title">Bonjour, ${escapeHtml(s.name)}</h3>
       <p class="aff-badge aff-${s.status}">${STATUS[s.status]}</p>
@@ -167,8 +174,10 @@
       <div class="aff-link"><input readonly id="affUrl" value="${url}"></div>
       <div class="aff-actions"><button class="form-submit" id="affCopy">Copier mon lien</button>
         <button class="form-submit aff-wa" id="affWa">Partager sur WhatsApp</button></div>
-      <div class="aff-stats">${stat('Clics', s.clicks)}${stat('Commandes', s.orders)}${stat('Validées', s.validated)}
-        ${stat('En attente', fmt(s.pending))}${stat('Gagnée', fmt(s.earned))}${stat('Déjà payée', fmt(s.paid))}</div>
+      <div class="aff-stats">${stat('Clics', s.clicks)}${stat('Commandes', s.orders)}${stat('Gagnée', fmt(s.earned))}
+        ${stat('En attente de validation', fmt(s.waiting || 0))}${stat('Gain accessible', fmt(s.available || 0))}${stat('Déjà payée', fmt(s.paid))}</div>
+      ${(s.available || 0) > 0 ? `<p class="aff-msg aff-ok">✅ Gain accessible actuellement : <b>${fmt(s.available)}</b>. Il sera envoyé sur votre Mobile Money lors du prochain paiement de la semaine.</p>` : ''}
+      ${(s.waiting || 0) > 0 ? `<p class="aff-msg aff-wait">⏳ Attendre la validation pour accéder au gain : <b>${fmt(s.waiting)}</b>.</p>` : ''}
       <label class="aff-label">Historique</label>
       <div class="aff-table"><table><thead><tr><th>Date</th><th>Client</th><th>Service</th><th>Montant</th><th>Commission</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table></div>
       <p class="aff-alt"><a href="#" id="affOut">Se déconnecter</a></p>`);
@@ -180,13 +189,13 @@
     $('affPayEdit').onclick = () => editPayout(s);
     $('affOut').onclick = async e => { e.preventDefault(); await supabaseClient.auth.signOut(); loginView(); };
   }
- 
+
   window.openAffiliateModal = registerView;
   window.openAffiliateSpace = async () => {
     const { data: { session } } = await supabaseClient.auth.getSession();
     session ? dashboard() : loginView();
   };
- 
+
   document.addEventListener('DOMContentLoaded', () => {
     captureReferral();
     document.querySelectorAll('.js-aff-join').forEach(el => el.addEventListener('click', e => { e.preventDefault(); registerView(); }));
@@ -195,4 +204,3 @@
   });
   function closeMobSafe() { if (typeof closeMob === 'function') closeMob(); }
 })();
- 
