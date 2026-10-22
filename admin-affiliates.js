@@ -5,7 +5,7 @@
 const AFF_LABEL = { pending: 'En attente', active: 'Actif', suspended: 'Suspendu' };
 const fcfa = n => Number(n || 0).toLocaleString('fr-FR') + ' F';
 let affList = [];
-
+ 
 async function loadAffiliates() {
   const body = document.getElementById('affiliatesBody');
   const { data, error } = await supabaseClient.from('affiliates').select('*').order('created_at', { ascending: false });
@@ -15,7 +15,8 @@ async function loadAffiliates() {
     const url = location.origin.replace('/admin', '') + '/?ref=' + a.referral_code;
     return `<tr>
       <td class="strong">${escapeHtml(a.name)}</td>
-      <td>${escapeHtml(a.phone || '')}<br>${escapeHtml(a.email || '')}</td>
+      <td>${escapeHtml(a.phone || '')}<br>${escapeHtml(a.email || '')}
+        <br>${a.payout_number ? `<span class="pill">${{ tmoney: 'T-Money', flooz: 'Flooz', autre: 'Autre' }[a.payout_method] || 'Mobile Money'}</span> ${escapeHtml(a.payout_number)} <a href="#" data-act="copynum" data-num="${escapeHtml(a.payout_number)}" style="color:var(--gold);font-size:.7rem">copier</a>` : '<span style="color:#e57373;font-size:.7rem">Mobile Money non renseigné</span>'}</td>
       <td>${escapeHtml(a.referral_code)}<br><a href="#" data-act="copy" data-url="${url}" style="color:var(--gold);font-size:.7rem">copier le lien</a></td>
       <td><span class="pill">${AFF_LABEL[a.status] || a.status}</span></td>
       <td>${a.total_clicks || 0}</td><td>${a.total_orders || 0}</td>
@@ -29,12 +30,13 @@ async function loadAffiliates() {
       </td></tr>`;
   }).join('') || '<tr><td colspan="9" class="empty-state">Aucun affilié.</td></tr>';
 }
-
+ 
 document.getElementById('affiliatesBody').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   e.preventDefault();
   const id = b.dataset.id, act = b.dataset.act, a = affList.find(x => x.id === id);
   let res;
+  if (act === 'copynum') { await navigator.clipboard.writeText(b.dataset.num); b.textContent = 'copié ✓'; return; }
   if (act === 'copy') { await navigator.clipboard.writeText(b.dataset.url); b.textContent = 'copié ✓'; return; }
   if (act === 'active' || act === 'suspended') res = await supabaseClient.rpc('admin_set_affiliate_status', { p_id: id, p_status: act });
   if (act === 'pay') {
@@ -53,7 +55,7 @@ document.getElementById('affiliatesBody').addEventListener('click', async (e) =>
   if (res && res.error) return alert('Erreur : ' + res.error.message);
   loadAffiliates();
 });
-
+ 
 async function showAffOrders(id, a) {
   const panel = document.getElementById('affOrdersPanel');
   const { data } = await supabaseClient.from('commandes')
@@ -73,3 +75,4 @@ async function showAffOrders(id, a) {
   });
 }
 document.getElementById('refreshAffiliates').addEventListener('click', loadAffiliates);
+ 
