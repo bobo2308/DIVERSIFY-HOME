@@ -1,206 +1,42 @@
-// ============================================================================
-// DIVERSIFY HOME — Programme d'affiliation (Supabase Auth + RPC sécurisées)
-// Dépend de : supabaseClient (supabase-client.js), showToast/escapeHtml (main.js / site-data.js)
-// ============================================================================
-(function () {
-  const KEY = 'dh_referral_code';
-  const fmt = n => Number(n || 0).toLocaleString('fr-FR') + ' FCFA';
-  const SYN = phone => 'aff.' + phone.replace(/\D/g, '') + '@diversifyhome.app';
-  const link = code => location.origin + '/?ref=' + code;
-  const $ = id => document.getElementById(id);
-  const STATUS = { pending: 'En attente de validation', active: 'Actif', suspended: 'Suspendu' };
-  const orderState = o => {
-    if (o.commission_status === 'paid') return '✅ Payée';
-    if (o.commission_status === 'cancelled') return 'Annulée';
-    if (o.commission_status === 'pending' && o.status === 'livre') return '<span class="aff-ok">✅ Gain accessible</span>';
-    if (o.commission_status === 'pending') return '<span class="aff-wait">⏳ Attendre la validation pour accéder au gain</span>';
-    return '—';
-  };
-  const OSTAT = { none: '—', pending: 'À payer', paid: 'Payée', cancelled: 'Annulée' };
+/* DIVERSIFY HOME — styles affiliation (utilise les variables de dh_styles.css) */
+.aff-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:9000;padding:16px;overflow-y:auto}
+.aff-overlay.open{display:flex}
+.aff-box{position:relative;background:var(--deep);border:1px solid var(--gold);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:40px 32px}
+.aff-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--gray);font-size:1.1rem;cursor:pointer}
+.aff-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:400;color:var(--white);margin:8px 0 22px}
+.aff-error{color:#d98a8a;font-size:.75rem;min-height:18px;margin:4px 0}
+.aff-alt,.aff-note{color:var(--gray);font-size:.78rem;line-height:1.8;margin-top:16px}
+.aff-alt a{color:var(--gold)}
+.aff-label{display:block;color:var(--gold);font-size:.62rem;letter-spacing:3px;text-transform:uppercase;margin:22px 0 8px}
+.aff-link input{width:100%;background:var(--card-bg);border:1px solid rgba(201,168,76,.3);color:var(--white);padding:13px;font-size:.8rem}
+.aff-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.aff-wa{background:#25d366}
+.aff-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.aff-stat{border:1px solid rgba(201,168,76,.2);background:var(--card-bg);padding:14px 8px;text-align:center}
+.aff-stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--gold)}
+.aff-stat span{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray)}
+.aff-badge{display:inline-block;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gray);color:var(--gray)}
+.aff-badge.aff-active{border-color:#4caf7a;color:#4caf7a}.aff-badge.aff-suspended{border-color:#d98a8a;color:#d98a8a}
+.aff-table{overflow-x:auto}.aff-table table{width:100%;border-collapse:collapse;font-size:.72rem;color:var(--white-dim)}
+.aff-table th{color:var(--gold);text-align:left;font-weight:600;padding:8px 6px;border-bottom:1px solid rgba(201,168,76,.3)}
+.aff-table td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.06)}
+.aff-subtle{display:block;margin-top:14px;font-size:.72rem;color:var(--gold);letter-spacing:1px}
+@media(max-width:520px){.aff-box{padding:32px 18px}.aff-actions{grid-template-columns:1fr}.aff-stats{grid-template-columns:repeat(2,1fr)}}
 
-  // ---- 1) Attribution : capture, validation serveur, persistance (localStorage + sessionStorage) ----
-  async function captureReferral() {
-    const ref = (new URLSearchParams(location.search).get('ref') || '').trim().toUpperCase();
-    if (ref) {
-      const { data } = await supabaseClient.rpc('track_affiliate_click', { p_code: ref });
-      if (data === true) {
-        localStorage.setItem(KEY, ref); sessionStorage.setItem(KEY, ref);
-        if (typeof showToast === 'function') showToast('Vous avez été recommandé par notre partenaire.');
-      } else { localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); }
-    } else {
-      const saved = localStorage.getItem(KEY);          // conserve l'attribution entre les visites/pages
-      if (saved) sessionStorage.setItem(KEY, saved);    // order-form.js / wizard lisent sessionStorage
-    }
-  }
+/* ===== Couleurs noir et or de l'espace affilié (indépendantes du thème bleu du site) ===== */
+.aff-box{--black:#0a0a0a;--deep:#111111;--gold:#c9a84c;--gold-light:#e2c07a;--gold-dark:#9a7730;--white:#f5f5f0;--white-dim:#cccccc;--gray:#888888;--card-bg:#181818}
 
-  // ---- 2) Interface (modale construite dynamiquement, styles dans affiliate.css) ----
-  function overlay() {
-    let o = $('affOverlay');
-    if (!o) {
-      o = document.createElement('div'); o.id = 'affOverlay'; o.className = 'aff-overlay';
-      o.innerHTML = '<div class="aff-box"><button class="aff-close" aria-label="Fermer">✕</button><div id="affBody"></div></div>';
-      document.body.appendChild(o);
-      o.addEventListener('click', e => { if (e.target === o || e.target.classList.contains('aff-close')) close(); });
-    }
-    return o;
-  }
-  function close() { $('affOverlay').classList.remove('open'); if (location.hash === '#affilie') history.replaceState(null, '', location.pathname); }
-  function show(html) { overlay().classList.add('open'); $('affBody').innerHTML = html; }
+/* ===== Mobile Money ===== */
+.aff-pay-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.aff-pay{background:transparent;border:1px solid rgba(201,168,76,.4);color:#cccccc;font-family:inherit;font-size:.8rem;padding:10px 16px;cursor:pointer;border-radius:2px}
+.aff-pay.on{background:#c9a84c;border-color:#c9a84c;color:#0a0a0a;font-weight:700}
+.aff-payout{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#181818;border:1px solid rgba(201,168,76,.25);padding:12px 14px;font-size:.85rem;color:#f5f5f0}
+.aff-payout b{color:#e2c07a}
+.aff-pay-edit{background:none;border:1px solid #c9a84c;color:#c9a84c;font-family:inherit;font-size:.72rem;padding:7px 12px;cursor:pointer;white-space:nowrap}
 
-  const PAY = { tmoney: 'T-Money', flooz: 'Flooz', autre: 'Autre' };
-  const payPills = sel => `<div class="aff-pay-row" id="affPayRow">${Object.keys(PAY).map(k =>
-    `<button type="button" class="aff-pay${k === sel ? ' on' : ''}" data-m="${k}">${PAY[k]}</button>`).join('')}</div>`;
-  function wirePills(initial) {
-    let cur = initial || 'tmoney';
-    $('affPayRow').addEventListener('click', e => {
-      const b = e.target.closest('.aff-pay'); if (!b) return;
-      cur = b.dataset.m;
-      $('affPayRow').querySelectorAll('.aff-pay').forEach(x => x.classList.toggle('on', x === b));
-    });
-    return () => cur;
-  }
-
-  let getPayMethod = () => 'tmoney';
-  function registerView() {
-    show(`<span class="section-tag">Programme d'affiliation</span><h3 class="aff-title">Rejoindre le programme</h3>
-    <form id="affRegForm" novalidate>
-      <div class="form-group"><label>Nom complet *</label><input id="arName" autocomplete="name"></div>
-      <div class="form-group"><label>Téléphone / WhatsApp *</label><input id="arPhone" type="tel" placeholder="+228 XX XX XX XX" autocomplete="tel"></div>
-      <label class="aff-label">Où recevoir vos gains ? *</label>
-      ${payPills('tmoney')}
-      <div class="form-group"><label>Numéro Mobile Money</label><input id="arPay" type="tel" placeholder="+228 XX XX XX XX"></div>
-      <p class="aff-note" style="margin-top:-6px">Rempli avec votre numéro WhatsApp, vous pouvez le changer.</p>
-      <div class="form-group"><label>Email</label><input id="arEmail" type="email" autocomplete="email"></div>
-      <div class="form-group"><label>Mot de passe * (8 caractères min.)</label><input id="arPw" type="password" autocomplete="new-password"></div>
-      <div class="form-group"><label>Confirmer le mot de passe *</label><input id="arPw2" type="password" autocomplete="new-password"></div>
-      <p class="aff-error" id="affErr"></p>
-      <button class="form-submit" id="arBtn" type="submit">Créer mon compte →</button>
-    </form>
-    <p class="aff-alt">Déjà affilié ? <a href="#" id="toLogin">Se connecter</a></p>`);
-    $('toLogin').onclick = e => { e.preventDefault(); loginView(); };
-    getPayMethod = wirePills('tmoney');
-    let payEdited = false;
-    $('arPay').addEventListener('input', () => { payEdited = true; });
-    $('arPhone').addEventListener('input', () => { if (!payEdited) $('arPay').value = $('arPhone').value; });
-    $('affRegForm').onsubmit = register;
-  }
-  function loginView() {
-    show(`<span class="section-tag">Espace affilié</span><h3 class="aff-title">Connexion</h3>
-    <form id="affLoginForm" novalidate>
-      <div class="form-group"><label>Email ou téléphone</label><input id="alId" autocomplete="username"></div>
-      <div class="form-group"><label>Mot de passe</label><input id="alPw" type="password" autocomplete="current-password"></div>
-      <p class="aff-error" id="affErr"></p>
-      <button class="form-submit" id="alBtn" type="submit">Se connecter →</button>
-    </form>
-    <p class="aff-alt">Pas encore inscrit ? <a href="#" id="toReg">Rejoindre le programme</a></p>`);
-    $('toReg').onclick = e => { e.preventDefault(); registerView(); };
-    $('affLoginForm').onsubmit = login;
-  }
-
-  async function register(e) {
-    e.preventDefault();
-    const name = $('arName').value.trim(), phone = $('arPhone').value.trim(), email = $('arEmail').value.trim();
-    const pw = $('arPw').value, err = $('affErr');
-    const payMethod = getPayMethod(), payNumber = $('arPay').value.trim();
-    if (payNumber.replace(/\D/g, '').length < 8) return err.textContent = 'Numéro Mobile Money valide requis pour recevoir vos gains.';
-    if (!name || phone.replace(/\D/g, '').length < 8) return err.textContent = 'Nom et numéro WhatsApp valides requis.';
-    if (email && !/^\S+@\S+\.\S+$/.test(email)) return err.textContent = 'Email invalide.';
-    if (pw.length < 8) return err.textContent = 'Le mot de passe doit contenir au moins 8 caractères.';
-    if (pw !== $('arPw2').value) return err.textContent = 'Les mots de passe ne correspondent pas.';
-    const btn = $('arBtn'); btn.disabled = true; btn.textContent = 'Création…'; err.textContent = '';
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email || SYN(phone), password: pw,
-      options: { data: { is_affiliate: 'true', name, phone, contact_email: email, payout_method: payMethod, payout_number: payNumber } }
-    });
-    btn.disabled = false; btn.textContent = 'Créer mon compte →';
-    if (error) return err.textContent = /registered|exists/i.test(error.message) ? 'Ce compte existe déjà. Connectez-vous.' : 'Inscription impossible : ' + error.message;
-    if (!data.session) return show('<h3 class="aff-title">Vérifiez votre email</h3><p class="aff-note">Un lien de confirmation vous a été envoyé. Cliquez dessus puis connectez-vous.</p>');
-    dashboard();
-  }
-
-  async function login(e) {
-    e.preventDefault();
-    const id = $('alId').value.trim(), err = $('affErr'), btn = $('alBtn');
-    btn.disabled = true; err.textContent = '';
-    const { error } = await supabaseClient.auth.signInWithPassword({ email: id.includes('@') ? id : SYN(id), password: $('alPw').value });
-    btn.disabled = false;
-    if (error) return err.textContent = 'Identifiants incorrects.';
-    dashboard();
-  }
-
-  function editPayout(s) {
-    show(`<span class="section-tag">Mon espace affilié</span><h3 class="aff-title">Où recevoir mes gains</h3>
-      <form id="affPayForm" novalidate>
-        ${payPills(s.payout_method || 'tmoney')}
-        <div class="form-group"><label>Numéro Mobile Money</label><input id="apNum" type="tel" value="${escapeHtml(s.payout_number || '')}" placeholder="+228 XX XX XX XX"></div>
-        <p class="aff-error" id="affErr"></p>
-        <button class="form-submit" id="apBtn" type="submit">Enregistrer</button>
-      </form>
-      <p class="aff-alt"><a href="#" id="apBack">Retour</a></p>`);
-    const get = wirePills(s.payout_method || 'tmoney');
-    $('apBack').onclick = e => { e.preventDefault(); dashboard(); };
-    $('affPayForm').onsubmit = async e => {
-      e.preventDefault();
-      const num = $('apNum').value.trim(), err = $('affErr'), btn = $('apBtn');
-      if (num.replace(/\D/g, '').length < 8) return err.textContent = 'Numéro valide requis.';
-      btn.disabled = true; err.textContent = '';
-      const { error } = await supabaseClient.rpc('set_my_payout', { p_method: get(), p_number: num });
-      btn.disabled = false;
-      if (error) return err.textContent = 'Enregistrement impossible. Réessayez.';
-      showToast('Numéro enregistré !');
-      dashboard();
-    };
-  }
-
-  async function dashboard() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) return loginView();
-    show('<p class="aff-note">Chargement…</p>');
-    const [{ data: s }, { data: orders }] = await Promise.all([
-      supabaseClient.rpc('my_affiliate_stats'), supabaseClient.rpc('my_affiliate_orders')]);
-    if (!s) { await supabaseClient.auth.signOut(); return show('<p class="aff-note">Ce compte n\'est pas un compte affilié.</p>'); }
-    const url = link(s.code);
-    const rows = (orders || []).map(o => `<tr><td>${new Date(o.created_at).toLocaleDateString('fr-FR')}</td><td>${escapeHtml(o.client || '—')}</td>
-      <td>${escapeHtml(o.service || '—')}</td><td>${o.amount ? fmt(o.amount) : '—'}</td><td>${o.commission ? fmt(o.commission) : '—'}</td>
-      <td>${orderState(o)}</td></tr>`).join('') || '<tr><td colspan="6" class="aff-note">Aucune commande pour le moment.</td></tr>';
-    const stat = (l, v) => `<div class="aff-stat"><b>${v}</b><span>${l}</span></div>`;
-    show(`<span class="section-tag">Mon espace affilié</span><h3 class="aff-title">Bonjour, ${escapeHtml(s.name)}</h3>
-      <p class="aff-badge aff-${s.status}">${STATUS[s.status]}</p>
-      ${s.status !== 'active' ? '<p class="aff-note">Votre lien deviendra actif dès validation de votre compte par DIVERSIFY HOME.</p>' : ''}
-      <label class="aff-label">Mes gains sont envoyés sur</label>
-      <div class="aff-payout"><span>${s.payout_number ? '<b>' + (PAY[s.payout_method] || 'Mobile Money') + '</b> · ' + escapeHtml(s.payout_number) : '<b>À renseigner</b>'}</span>
-        <button class="aff-pay-edit" id="affPayEdit" type="button">${s.payout_number ? 'Modifier' : 'Ajouter'}</button></div>
-      <label class="aff-label">Mon lien de parrainage</label>
-      <div class="aff-link"><input readonly id="affUrl" value="${url}"></div>
-      <div class="aff-actions"><button class="form-submit" id="affCopy">Copier mon lien</button>
-        <button class="form-submit aff-wa" id="affWa">Partager sur WhatsApp</button></div>
-      <div class="aff-stats">${stat('Clics', s.clicks)}${stat('Commandes', s.orders)}${stat('Gagnée', fmt(s.earned))}
-        ${stat('En attente de validation', fmt(s.waiting || 0))}${stat('Gain accessible', fmt(s.available || 0))}${stat('Déjà payée', fmt(s.paid))}</div>
-      ${(s.available || 0) > 0 ? `<p class="aff-msg aff-ok">✅ Gain accessible actuellement : <b>${fmt(s.available)}</b>. Il sera envoyé sur votre Mobile Money lors du prochain paiement de la semaine.</p>` : ''}
-      ${(s.waiting || 0) > 0 ? `<p class="aff-msg aff-wait">⏳ Attendre la validation pour accéder au gain : <b>${fmt(s.waiting)}</b>.</p>` : ''}
-      <label class="aff-label">Historique</label>
-      <div class="aff-table"><table><thead><tr><th>Date</th><th>Client</th><th>Service</th><th>Montant</th><th>Commission</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table></div>
-      <p class="aff-alt"><a href="#" id="affOut">Se déconnecter</a></p>`);
-    $('affCopy').onclick = async () => {
-      try { await navigator.clipboard.writeText(url); } catch (_) { $('affUrl').select(); document.execCommand('copy'); }
-      showToast('Lien copié !');
-    };
-    $('affWa').onclick = () => window.open('https://wa.me/?text=' + encodeURIComponent('Découvrez les services de DIVERSIFY HOME.\n👉 ' + url), '_blank');
-    $('affPayEdit').onclick = () => editPayout(s);
-    $('affOut').onclick = async e => { e.preventDefault(); await supabaseClient.auth.signOut(); loginView(); };
-  }
-
-  window.openAffiliateModal = registerView;
-  window.openAffiliateSpace = async () => {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    session ? dashboard() : loginView();
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    captureReferral();
-    document.querySelectorAll('.js-aff-join').forEach(el => el.addEventListener('click', e => { e.preventDefault(); registerView(); }));
-    document.querySelectorAll('.js-aff-space').forEach(el => el.addEventListener('click', e => { e.preventDefault(); closeMobSafe(); openAffiliateSpace(); }));
-    if (location.pathname.replace(/\/$/, '') === '/affiliate' || location.hash === '#affilie') openAffiliateSpace();
-  });
-  function closeMobSafe() { if (typeof closeMob === 'function') closeMob(); }
-})();
+/* ===== Gains : en attente / accessible ===== */
+.aff-msg{font-size:.82rem;line-height:1.6;padding:12px 14px;margin:10px 0;border:1px solid rgba(201,168,76,.25);background:#181818;color:#f5f5f0}
+.aff-msg b{color:#e2c07a}
+.aff-ok{color:#8fc28f}
+.aff-wait{color:#e2c07a}
+.aff-table .aff-wait{font-size:.7rem;line-height:1.4;display:inline-block}
