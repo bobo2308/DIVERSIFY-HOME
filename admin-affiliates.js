@@ -5,7 +5,7 @@
 const AFF_LABEL = { pending: 'En attente', active: 'Actif', suspended: 'Suspendu' };
 const fcfa = n => Number(n || 0).toLocaleString('fr-FR') + ' F';
 let affList = [];
- 
+
 async function loadAffiliates() {
   const body = document.getElementById('affiliatesBody');
   const { data, error } = await supabaseClient.from('affiliates').select('*').order('created_at', { ascending: false });
@@ -25,12 +25,13 @@ async function loadAffiliates() {
         ${a.status !== 'active' ? `<button class="btn" data-act="active" data-id="${a.id}">Activer</button>` : ''}
         ${a.status !== 'suspended' ? `<button class="btn" data-act="suspended" data-id="${a.id}">Suspendre</button>` : ''}
         <button class="btn" data-act="orders" data-id="${a.id}">Commandes</button>
+        <button class="btn" data-act="resetpw" data-id="${a.id}">Mot de passe</button>
         ${Number(a.pending_commission) > 0 ? `<button class="btn" data-act="pay" data-id="${a.id}">Marquer payé</button>` : ''}
         <button class="btn btn-danger" data-act="delete" data-id="${a.id}">Supprimer</button>
       </td></tr>`;
   }).join('') || '<tr><td colspan="9" class="empty-state">Aucun affilié.</td></tr>';
 }
- 
+
 document.getElementById('affiliatesBody').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   e.preventDefault();
@@ -39,6 +40,13 @@ document.getElementById('affiliatesBody').addEventListener('click', async (e) =>
   if (act === 'copynum') { await navigator.clipboard.writeText(b.dataset.num); b.textContent = 'copié ✓'; return; }
   if (act === 'copy') { await navigator.clipboard.writeText(b.dataset.url); b.textContent = 'copié ✓'; return; }
   if (act === 'active' || act === 'suspended') res = await supabaseClient.rpc('admin_set_affiliate_status', { p_id: id, p_status: act });
+  if (act === 'resetpw') {
+    if (!confirm(`Créer un nouveau mot de passe temporaire pour ${a.name} ? L'ancien ne marchera plus.`)) return;
+    const { data: pw, error: pe } = await supabaseClient.rpc('admin_reset_affiliate_password', { p_id: id });
+    if (pe || !pw) return alert('Impossible de réinitialiser : ' + (pe ? pe.message : 'erreur'));
+    showTempPassword(a, pw);
+    return;
+  }
   if (act === 'pay') {
     if (!confirm(`Marquer ${fcfa(a.pending_commission)} comme PAYÉ à ${a.name} ?`)) return;
     res = await supabaseClient.rpc('admin_pay_commissions', { p_affiliate: id });
@@ -55,7 +63,7 @@ document.getElementById('affiliatesBody').addEventListener('click', async (e) =>
   if (res && res.error) return alert('Erreur : ' + res.error.message);
   loadAffiliates();
 });
- 
+
 async function showAffOrders(id, a) {
   const panel = document.getElementById('affOrdersPanel');
   const { data } = await supabaseClient.from('commandes')
@@ -75,4 +83,24 @@ async function showAffOrders(id, a) {
   });
 }
 document.getElementById('refreshAffiliates').addEventListener('click', loadAffiliates);
- 
+
+
+// Fenêtre « mot de passe temporaire » (affiché une seule fois)
+function showTempPassword(a, pw) {
+  const num = String(a.phone || '').replace(/\D/g, '');
+  const msg = `Bonjour ${a.name}, voici votre mot de passe temporaire pour l'espace affilié DIVERSIFY HOME : ${pw}\nConnectez-vous, puis changez-le dans votre espace (Changer mon mot de passe).`;
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
+  ov.innerHTML = `<div style="background:#111;border:1px solid #c9a84c;max-width:380px;width:100%;padding:28px;color:#f5f5f0;font-family:inherit">
+    <div style="font-size:.7rem;letter-spacing:2px;color:#c9a84c;margin-bottom:8px">MOT DE PASSE TEMPORAIRE</div>
+    <div style="font-size:.85rem;color:#ccc;margin-bottom:12px">Pour <b>${escapeHtml(a.name)}</b>. Il ne sera plus affiché après fermeture : copiez-le ou envoyez-le maintenant.</div>
+    <div style="font-size:1.6rem;letter-spacing:4px;color:#e2c07a;font-weight:700;margin-bottom:16px">${escapeHtml(pw)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="tpCopy">Copier</button>
+      <a class="btn" id="tpWa" target="_blank" rel="noopener" style="background:#1fa855;color:#fff;text-decoration:none" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}">Envoyer sur WhatsApp</a>
+      <button class="btn" id="tpClose">Fermer</button>
+    </div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#tpCopy').onclick = async e => { await navigator.clipboard.writeText(pw); e.target.textContent = 'Copié ✓'; };
+  ov.querySelector('#tpClose').onclick = () => ov.remove();
+}
