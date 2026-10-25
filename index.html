@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DIVERSIFY HOME – Livraison • Tech • Design • Photo • Lomé</title>
 <meta name="description" content="DIVERSIFY HOME — Multi-services premium à Lomé, Togo. Livraison, réparation tech, design graphique, photo, impression, abonnements numériques et bien plus.">
+<!-- Aperçu quand le lien est partagé (WhatsApp, Facebook…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DIVERSIFY HOME">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="DIVERSIFY HOME — Tous vos services au même endroit">
+<meta property="og:description" content="Transport, design, création de site, boutique en ligne, photo et plus encore, à Lomé (Togo). Commandez en quelques clics.">
+<meta property="og:url" content="https://diversify-home.vercel.app/">
+<meta property="og:image" content="https://diversify-home.vercel.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DIVERSIFY HOME — Tous vos services au même endroit">
+<meta name="twitter:description" content="Transport, design, création de site, boutique en ligne, photo et plus encore, à Lomé (Togo).">
+<meta name="twitter:image" content="https://diversify-home.vercel.app/og-image.jpg">
+<meta name="theme-color" content="#070b14">
+<!-- Petit logo de l'onglet -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="dh_styles.css">
 <link rel="stylesheet" href="affiliate.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -172,6 +191,7 @@ window.__dhServices = fetch('https://zhxkmmbrbhkcgylubijm.supabase.co/rest/v1/se
       </div>
       <a class="affil-cta js-aff-join" href="#">Rejoindre le programme →</a>
       <a class="aff-subtle js-aff-space" href="#affilie">Déjà affilié ? Accéder à mon espace →</a>
+      <br><a class="aff-subtle js-rules" href="#regles">Règles du programme →</a>
     </div>
     <div class="reveal">
       <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:8px;color:var(--white)">Taux de commission par service</h3>
@@ -325,7 +345,7 @@ window.__dhServices = fetch('https://zhxkmmbrbhkcgylubijm.supabase.co/rest/v1/se
     <p>Nous ne vendons jamais vos données et ne les utilisons pas pour de la publicité.</p>
 
     <h3>4. Avec qui sont-elles partagées ?</h3>
-    <p>Uniquement avec les prestataires techniques nécessaires au site : base de données et authentification, hébergement, polices d'écriture et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
+    <p>Uniquement avec les prestataires techniques nécessaires au site : Supabase (base de données et authentification), Vercel (hébergement), Google Fonts (polices d'écriture) et WhatsApp lorsque vous nous écrivez. Un affilié ne voit jamais vos coordonnées : seulement le prénom, le service, le montant et le statut des commandes qu'il a recommandées.</p>
 
     <h3>5. Combien de temps ?</h3>
     <p>Pendant la durée nécessaire au suivi de votre commande et à nos obligations de gestion, puis elles sont supprimées ou anonymisées. Vous pouvez demander leur suppression à tout moment.</p>
@@ -355,6 +375,50 @@ window.__dhServices = fetch('https://zhxkmmbrbhkcgylubijm.supabase.co/rest/v1/se
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   if (location.hash === '#confidentialite') open();
+})();
+</script>
+
+<!-- ============================== RÈGLES DU PROGRAMME D'AFFILIATION ============================== -->
+<div class="priv-overlay" id="rulesOverlay" aria-hidden="true">
+  <div class="priv-box" role="dialog" aria-label="Règles du programme d'affiliation">
+    <button class="priv-close" id="rulesClose" aria-label="Fermer">✕</button>
+    <span class="section-tag">Programme d'affiliation</span>
+    <h2 class="priv-title">Règles du programme</h2>
+    <p class="priv-date">Dernière mise à jour : octobre 2026</p>
+
+    <h3>1. Inscription</h3>
+    <p>Gratuite. Vous recevez un lien unique à partager.</p>
+
+    <h3>2. Votre commission</h3>
+    <p>C'est un pourcentage du montant de la commande, selon le service (de 4 % à 8 %, plafonné à 10 %). Le taux de chaque service est affiché sur le site.</p>
+
+    <h3>3. Quand une commande compte</h3>
+    <p>La commission est calculée dès que la commande est confirmée et reste « en attente de validation ». Le gain devient accessible quand la commande est <b>livrée et payée par le client</b>. Une commande annulée ou non payée ne donne pas de commission.</p>
+
+    <h3>4. Paiement</h3>
+    <p>Une fois par semaine, par Mobile Money (T-Money ou Flooz) sur le numéro de votre espace affilié. <b>Aucun montant minimum.</b></p>
+
+    <h3>5. Ce qui est interdit</h3>
+    <p>Commander pour soi-même avec son propre lien, envoyer du spam, ou faire de fausses promesses aux clients. En cas d'abus, le compte est suspendu et les commissions concernées sont annulées.</p>
+
+    <h3>6. Changements</h3>
+    <p>DIVERSIFY HOME peut modifier ces règles. Les commissions déjà acquises restent dues.</p>
+  </div>
+</div>
+
+<script>
+/* Règles du programme : ouverture / fermeture (intégré) */
+(function () {
+  var o = document.getElementById('rulesOverlay');
+  if (!o) return;
+  function open() { o.classList.add('open'); o.setAttribute('aria-hidden', 'false'); }
+  function close() { o.classList.remove('open'); o.setAttribute('aria-hidden', 'true'); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.js-rules');
+    if (a) { e.preventDefault(); open(); return; }
+    if (e.target === o || (e.target.closest && e.target.closest('#rulesClose'))) close();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 })();
 </script>
 
