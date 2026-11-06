@@ -1,0 +1,45 @@
+// ============================================================================
+// DIVERSIFY HOME — Admin : avis clients (publier, masquer, supprimer)
+// ============================================================================
+const REV_LABEL = { pending: 'En attente', published: 'Publié', hidden: 'Masqué' };
+
+async function loadReviews() {
+  const box = document.getElementById('reviewsList');
+  box.innerHTML = '<p class="loading-state">Chargement…</p>';
+  const f = document.getElementById('reviewFilter').value;
+  let q = supabaseClient.from('reviews').select('*').order('created_at', { ascending: false }).limit(200);
+  if (f) q = q.eq('status', f);
+  const { data, error } = await q;
+  if (error) { box.innerHTML = `<p class="empty-state">Erreur : ${escapeHtml(error.message)}</p>`; return; }
+  if (!data || !data.length) { box.innerHTML = '<p class="empty-state">Aucun avis ici.</p>'; return; }
+  box.innerHTML = data.map(r => `
+    <div class="rev-admin" style="background:var(--card-bg);border:1px solid rgba(201,168,76,.25);padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <span><b>${escapeHtml(r.name)}</b>${r.service_name ? ' · ' + escapeHtml(r.service_name) : ''}</span>
+        <span style="color:var(--gold)">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)} · ${REV_LABEL[r.status] || r.status} · ${new Date(r.created_at).toLocaleDateString('fr-FR')}</span>
+      </div>
+      <div style="font-size:.9rem;line-height:1.6;margin-bottom:10px">« ${escapeHtml(r.comment)} »</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${r.status !== 'published' ? `<button class="btn" data-ract="published" data-id="${r.id}">Publier</button>` : ''}
+        ${r.status !== 'hidden' ? `<button class="btn" data-ract="hidden" data-id="${r.id}">Masquer</button>` : ''}
+        <button class="btn btn-danger" data-ract="delete" data-id="${r.id}">Supprimer</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('reviewsList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-ract]'); if (!b) return;
+  const act = b.dataset.ract, id = b.dataset.id;
+  b.disabled = true;
+  if (act === 'delete') {
+    if (!confirm('Supprimer définitivement cet avis ?')) { b.disabled = false; return; }
+    const { error } = await supabaseClient.from('reviews').delete().eq('id', id);
+    if (error) { alert('Impossible : ' + error.message); b.disabled = false; return; }
+  } else {
+    const { error } = await supabaseClient.from('reviews').update({ status: act }).eq('id', id);
+    if (error) { alert('Impossible : ' + error.message); b.disabled = false; return; }
+  }
+  loadReviews();
+});
+document.getElementById('reviewFilter').addEventListener('change', loadReviews);
+document.getElementById('refreshReviews').addEventListener('click', loadReviews);
