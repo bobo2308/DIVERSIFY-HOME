@@ -92,6 +92,7 @@ document.querySelectorAll('.sidebar .admin-nav a').forEach(link => {
 
     if (target === 'services' && typeof loadServices === 'function') loadServices();
     if (target === 'affiliates' && typeof loadAffiliates === 'function') loadAffiliates();
+    if (target === 'reviews' && typeof loadReviews === 'function') loadReviews();
     if (target === 'commandes' && typeof loadOrders === 'function') loadOrders();
   });
 });
